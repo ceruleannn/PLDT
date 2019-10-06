@@ -21,16 +21,14 @@ chrome.webRequest.onHeadersReceived.addListener(receivedListener, filterURLs, ["
 
 chrome.tabs.onUpdated.addListener((id,info,tab) => {
 
-    console.log(id.valueOf() + " " + info.status);
-
     if (info.status === "complete"){
-        console.log(tab.url);
-        console.log(tab.title);
 
-        send({url:tab.url,title: tab.title});
+        setTimeout(function () {
+            console.log(tab.url);
+            console.log(tab.title);
+            send({url:tab.url,title: tab.title});
+        },1000);
     }
-
-
 });
 
 chrome.bookmarks.onCreated.addListener((id, bookmark) => {
@@ -45,7 +43,8 @@ chrome.bookmarks.onChanged.addListener((id, changeInfo) => {
 let send = function (param) {
     $.ajax({
         type: "POST",
-        url: "http://hyhello.com/access/log",
+        url: "http://127.0.0.1/access/log",
+        //url: "http://hyhello.com/access/log",
         data: {url:param.url, title:param.title},
         dataType: "json",
         success: function(data){
