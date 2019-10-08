@@ -9,11 +9,30 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
- *  TODO 失败通知 / 本地存储 /
- *  前端屏蔽前缀例如 chrome://
+ *  TODO
  *  存储host
  *  无痕模式
  *  //文档快照? 截图?
+ *
+ *
+ *  POPUP
+ *  是否无痕模式√
+ *  是否全局跨域√
+ *  关闭通知√
+ *
+ *  OPTION
+ *  服务器地址配置
+ *  备用服务器地址配置
+ *  白名单配置
+ *  identity配置
+ *  地点配置
+ *
+ *  background
+ *  队列,本地存储
+ *  书签管理
+ *  onload (PING 协议) 检测服务器状态
+ *  失败通知
+ *
  */
 @Service
 public class AccessLogService {

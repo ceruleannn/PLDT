@@ -1,22 +1,15 @@
 
-chrome.notifications.create(null, {
-    type: 'image',
-    iconUrl: '../img/hello_extensions.png',
-    title: '祝福',
-    message: '国庆70周年',
-    imageUrl: '../img/hello_extensions.png'
-});
 
-let filterURLs = {"urls": ["http://*/*", "https://*/*"]};
-let receivedListener = function (info) {
-    let response = info.responseHeaders.filter(e => e.name.toLowerCase() !== 'access-control-allow-origin' && e.name.toLowerCase() !== 'access-control-allow-methods');
-    response.push({'name': 'Access-Control-Allow-Origin','value': '*'});
-    response.push({'name': 'Access-Control-Allow-Methods', 'value': 'GET, PUT, POST, DELETE, HEAD, OPTIONS'});
-
-    return {"responseHeaders": response};
-};
-
-chrome.webRequest.onHeadersReceived.addListener(receivedListener, filterURLs, ["blocking", "responseHeaders"]);
+// let filterURLs = {"urls": ["http://*/*", "https://*/*"]};
+// let receivedListener = function (info) {
+//     let response = info.responseHeaders.filter(e => e.name.toLowerCase() !== 'access-control-allow-origin' && e.name.toLowerCase() !== 'access-control-allow-methods');
+//     response.push({'name': 'Access-Control-Allow-Origin','value': '*'});
+//     response.push({'name': 'Access-Control-Allow-Methods', 'value': 'GET, PUT, POST, DELETE, HEAD, OPTIONS'});
+//
+//     return {"responseHeaders": response};
+// };
+//
+// chrome.webRequest.onHeadersReceived.addListener(receivedListener, filterURLs, ["blocking", "responseHeaders"]);
 
 
 chrome.tabs.onUpdated.addListener((id,info,tab) => {
@@ -49,6 +42,19 @@ let send = function (param) {
         dataType: "json",
         success: function(data){
             console.log(data);
+        },
+        error: function (error) {
+            console.log(error);
+            notifyMsg("访问记录传输失败! (⇀‸↼‶) \n"  + param.url);
         }
+    });
+};
+
+let notifyMsg = function (msg) {
+    chrome.notifications.create(null, {
+        type: 'basic',
+        iconUrl: '../img/hello_extensions.png',
+        title: 'hyhello消息',
+        message: msg,
     });
 };

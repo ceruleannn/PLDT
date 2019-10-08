@@ -1,6 +1,7 @@
 package com.hyhello.priceless.controller;
 
 import com.hyhello.priceless.dataaccess.entity.AccessLogEntity;
+import com.hyhello.priceless.dto.Response;
 import com.hyhello.priceless.service.AccessLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,11 +21,12 @@ public class AccessLogController {
     public AccessLogService accessLogService;
 
     @PostMapping("/log")
-    public String logAccess(String url, String title){
+    @ResponseBody
+    public Response logAccess(String url, String title){
 
         accessLogService.saveAccessLog(url,title);
 
-        return "访问记录成功: " + url + " " + title;
+        return new Response(200, "访问记录成功: " + url + " " + title);
     }
 
 }
