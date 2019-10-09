@@ -1,7 +1,8 @@
 package com.hyhello.priceless.service;
 
-import com.hyhello.priceless.dataaccess.entity.AccessLogEntity;
+import com.hyhello.priceless.dataaccess.entity.AccessLog;
 import com.hyhello.priceless.dataaccess.repository.AccessLogRepository;
+import com.hyhello.priceless.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ import java.time.LocalDateTime;
  *  OPTION
  *  服务器地址配置
  *  备用服务器地址配置
- *  白名单配置
+ *  白名单配置 [通配符正则]
  *  identity配置
  *  地点配置
  *
@@ -41,9 +42,12 @@ public class AccessLogService {
     private AccessLogRepository accessLogRepository;
 
     public void saveAccessLog(String url, String title){
-        AccessLogEntity accessLog = new AccessLogEntity();
+        AccessLog accessLog = new AccessLog();
         accessLog.setUrl(url);
         accessLog.setTitle(title);
+        accessLog.setHost(StringUtils.getHost(url));
+        accessLog.setMark("test");
+        accessLog.setLocation("hlx");
         accessLog.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
 
         accessLogRepository.save(accessLog);

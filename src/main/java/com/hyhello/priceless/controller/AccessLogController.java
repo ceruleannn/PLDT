@@ -1,6 +1,5 @@
 package com.hyhello.priceless.controller;
 
-import com.hyhello.priceless.dataaccess.entity.AccessLogEntity;
 import com.hyhello.priceless.dto.Response;
 import com.hyhello.priceless.service.AccessLogService;
 import org.springframework.beans.factory.annotation.Autowired;
