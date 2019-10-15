@@ -2,4 +2,33 @@
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
         version="2.0">
 
+    <entity class="com.hyhello.priceless.dataaccess.entity.AccessLog">
+        <table name="tb_access_log" schema="hyhello" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+            </id>
+            <basic name="url">
+                <column name="url"/>
+            </basic>
+            <basic name="title">
+                <column name="title"/>
+            </basic>
+            <basic name="host">
+                <column name="host"/>
+            </basic>
+            <basic name="location">
+                <column name="location"/>
+            </basic>
+            <basic name="createTime">
+                <column name="createTime"/>
+            </basic>
+            <basic name="mark">
+                <column name="mark"/>
+            </basic>
+            <basic name="remark">
+                <column name="remark"/>
+            </basic>
+        </attributes>
+    </entity>
 </entity-mappings>

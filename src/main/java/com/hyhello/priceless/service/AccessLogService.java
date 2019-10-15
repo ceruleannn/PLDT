@@ -11,24 +11,23 @@ import java.time.LocalDateTime;
 
 /**
  *  TODO
- *  存储host
- *  无痕模式
  *  //文档快照? 截图?
  *
  *
  *  POPUP
- *  是否无痕模式√
- *  是否全局跨域√
- *  关闭通知√
+ *  是否无痕模式√  默认否
+ *  是否全局跨域√  默认否
+ *  关闭通知√     默认否
  *
  *  OPTION
  *  服务器地址配置
  *  备用服务器地址配置
- *  白名单配置 [通配符正则]
+ *  白名单配置 [通配符正则] <云>
  *  identity配置
  *  地点配置
  *
  *  background
+ *  <去重>
  *  队列,本地存储
  *  书签管理
  *  onload (PING 协议) 检测服务器状态
@@ -41,14 +40,12 @@ public class AccessLogService {
     @Autowired
     private AccessLogRepository accessLogRepository;
 
-    public void saveAccessLog(String url, String title){
-        AccessLog accessLog = new AccessLog();
-        accessLog.setUrl(url);
-        accessLog.setTitle(title);
-        accessLog.setHost(StringUtils.getHost(url));
+    public void saveAccessLog(AccessLog accessLog){
+
+        accessLog.setHost(StringUtils.getHost(accessLog.getUrl()));
+        accessLog.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
         accessLog.setMark("test");
         accessLog.setLocation("hlx");
-        accessLog.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
 
         accessLogRepository.save(accessLog);
 
