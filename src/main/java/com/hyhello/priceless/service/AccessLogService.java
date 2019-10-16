@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
  *  是否无痕模式√  默认否
  *  是否全局跨域√  默认否
  *  关闭通知√     默认否
+ *  关闭推送
  *
  *  OPTION
  *  服务器地址配置
@@ -28,10 +29,14 @@ import java.time.LocalDateTime;
  *
  *  background
  *  <去重>
- *  队列,本地存储
+ *
  *  书签管理
  *  onload (PING 协议) 检测服务器状态
- *  失败通知
+ *  失败通知 队列,本地存储
+ *
+ *  install/uninstall 跳转
+ *
+ *  //推送流 通知
  *
  */
 @Service
