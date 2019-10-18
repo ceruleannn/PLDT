@@ -23,10 +23,10 @@ import java.time.LocalDateTime;
  *  OPTION
  *  服务器地址配置
  *  备用服务器地址配置
- *  白名单配置 [通配符正则] <云>
  *  identity配置
- *  地点配置
+ *   地点配置
  *
+ * *  白名单配置 [通配符正则] <云>
  *  background
  *  <去重>
  *

@@ -8,17 +8,16 @@ $(function () {
         $("#push_close").attr("checked",window.push_close);
 
         $("#log_close").change(function() {
-            console.log($("#log_close").is(":checked"));
-            window.log_close = $("#log_close").is(":checked");
+            window.logSwitch($("#log_close").is(":checked"));
         });
         $("#cors_open").change(function() {
-            window.cors_open = $("#cors_open").is(":checked");
+            window.corsSwitch($("#cors_open").is(":checked"));
         });
         $("#notification_close").change(function() {
-            window.notification_close = $("#notification_close").is(":checked");
+            window.notificationSwitch($("#notification_close").is(":checked"));
         });
         $("#push_close").change(function() {
-            window.push_close = $("#push_close").is(":checked")
+            window.pushSwitch($("#push_close").is(":checked"));
         });
     });
 });
