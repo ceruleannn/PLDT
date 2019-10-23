@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
  *  关闭通知√     默认否
  *  关闭推送
  *
- *  OPTION
+ *  OPTION <本地存储>
  *  服务器地址配置
  *  备用服务器地址配置
  *  identity配置
@@ -38,6 +38,7 @@ import java.time.LocalDateTime;
  *
  *  //推送流 通知
  *
+ *  10月22日周 备案.去重.更好的记录监听.获取拓展
  */
 @Service
 public class AccessLogService {
