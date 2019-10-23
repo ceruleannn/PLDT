@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Include jQuery -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <!-- Include Fancytree skin and library -->
+    <link href="css/ui.fancytree.css" rel="stylesheet">
+    <script src="js/jquery.fancytree-all-deps.js"></script>
+    <!-- Initialize the tree when page is loaded -->
+    <script type="text/javascript">
+        $(function(){  // on page load
+            // Create the tree inside the <div id="tree"> element.
+            $("#tree").fancytree({
+                extensions: ["edit", "filter"],
+                source: [
+                    {title: "Node 1", key: "1"},
+                    {title: "Folder 2", key: "2", folder: true, children: [
+                            {title: "Node 2.1", key: "3"},
+                            {title: "Node 2.2", key: "4"}
+                        ]}
+                ],
+            }).on("nodeCommand", function(event, data) {
+                // Custom event handler that is triggered by keydown-handler and
+                // context menu:
+                var refNode,
+                    moveMode,
+                    tree = $(this).fancytree("getTree"),
+                    node = tree.getActiveNode();
+
+                switch (data.cmd) {
+                    case "addChild":
+                    case "addSibling":
+                    case "indent":
+                    case "moveDown":
+                    case "moveUp":
+                    case "outdent":
+                    case "remove":
+                    case "rename":
+                        tree.applyCommand(data.cmd, node);
+                        break;
+                    case "cut":
+                        CLIPBOARD = { mode: data.cmd, data: node };
+                        break;
+                    case "copy":
+                        CLIPBOARD = {
+                            mode: data.cmd,
+                            data: node.toDict(function(n) {
+                                delete n.key;
+                            }),
+                        };
+                        break;
+                    case "clear":
+                        CLIPBOARD = null;
+                        break;
+                    case "paste":
+                        if (CLIPBOARD.mode === "cut") {
+                            // refNode = node.getPrevSibling();
+                            CLIPBOARD.data.moveTo(node, "child");
+                            CLIPBOARD.data.setActive();
+                        } else if (CLIPBOARD.mode === "copy") {
+                            node.addChildren(
+                                CLIPBOARD.data
+                            ).setActive();
+                        }
+                        break;
+                    default:
+                        alert("Unhandled command: " + data.cmd);
+                        return;
+                }
+            })
+                .on("keydown", function(e) {
+                    var cmd = null;
+
+                    // console.log(e.type, $.ui.fancytree.eventToString(e));
+                    switch ($.ui.fancytree.eventToString(e)) {
+                        case "ctrl+shift+n":
+                        case "meta+shift+n": // mac: cmd+shift+n
+                            cmd = "addChild";
+                            break;
+                        case "ctrl+c":
+                        case "meta+c": // mac
+                            cmd = "copy";
+                            break;
+                        case "ctrl+v":
+                        case "meta+v": // mac
+                            cmd = "paste";
+                            break;
+                        case "ctrl+x":
+                        case "meta+x": // mac
+                            cmd = "cut";
+                            break;
+                        case "ctrl+n":
+                        case "meta+n": // mac
+                            cmd = "addSibling";
+                            break;
+                        case "del":
+                        case "meta+backspace": // mac
+                            cmd = "remove";
+                            break;
+                        // case "f2":  // already triggered by ext-edit pluging
+                        //   cmd = "rename";
+                        //   break;
+                        case "ctrl+up":
+                        case "ctrl+shift+up": // mac
+                            cmd = "moveUp";
+                            break;
+                        case "ctrl+down":
+                        case "ctrl+shift+down": // mac
+                            cmd = "moveDown";
+                            break;
+                        case "ctrl+right":
+                        case "ctrl+shift+right": // mac
+                            cmd = "indent";
+                            break;
+                        case "ctrl+left":
+                        case "ctrl+shift+left": // mac
+                            cmd = "outdent";
+                    }
+                    if (cmd) {
+                        $(this).trigger("nodeCommand", { cmd: cmd });
+                        return false;
+                    }
+                });
+            // Note: Loading and initialization may be asynchronous, so the nodes may not be accessible yet.
+            $("#tree").contextmenu({
+                delegate: "span.fancytree-node",
+                menu: [
+                    {
+                        title: "Edit <kbd>[F2]</kbd>",
+                        cmd: "rename",
+                        uiIcon: "ui-icon-pencil",
+                    },
+                    {
+                        title: "Delete <kbd>[Del]</kbd>",
+                        cmd: "remove",
+                        uiIcon: "ui-icon-trash",
+                    },
+                    { title: "----" },
+                    {
+                        title: "New sibling <kbd>[Ctrl+N]</kbd>",
+                        cmd: "addSibling",
+                        uiIcon: "ui-icon-plus",
+                    },
+                    {
+                        title: "New child <kbd>[Ctrl+Shift+N]</kbd>",
+                        cmd: "addChild",
+                        uiIcon: "ui-icon-arrowreturn-1-e",
+                    },
+                    { title: "----" },
+                    {
+                        title: "Cut <kbd>Ctrl+X</kbd>",
+                        cmd: "cut",
+                        uiIcon: "ui-icon-scissors",
+                    },
+                    {
+                        title: "Copy <kbd>Ctrl-C</kbd>",
+                        cmd: "copy",
+                        uiIcon: "ui-icon-copy",
+                    },
+                    {
+                        title: "Paste as child<kbd>Ctrl+V</kbd>",
+                        cmd: "paste",
+                        uiIcon: "ui-icon-clipboard",
+                        disabled: true,
+                    },
+                ],
+                beforeOpen: function(event, ui) {
+                    var node = $.ui.fancytree.getNode(ui.target);
+                    $("#tree").contextmenu(
+                        "enableEntry",
+                        "paste",
+                    );
+                    node.setActive();
+                },
+                select: function(event, ui) {
+                    var that = this;
+                    // delay the event, so the menu can close and the click event does
+                    // not interfere with the edit control
+                    setTimeout(function() {
+                        $(that).trigger("nodeCommand", { cmd: ui.cmd });
+                    }, 100);
+                },
+            })
+
+        });
+
+
+    </script>
+</head>
+<body>
+
+<!-- Define the targel element for the tree -->
+<div id="tree"></div>
+
+</body>
+
+</html>
+
