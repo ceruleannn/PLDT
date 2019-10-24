@@ -21,7 +21,7 @@ chrome.runtime.onInstalled.addListener(function (e) {
         if (e.reason === "install") {
             tab.open(homepage + '?v=1' + + "&type=" + e.reason);
         }
-    }, 3000);
+    }, 2000);
 });
 
 
@@ -124,6 +124,8 @@ $(function(){
 });
 
 function tabsUpdateListener(id,info,tab) {
+    console.log(info);
+    console.log(tab);
 
 	if (info.status === "complete"){
 		setTimeout(function () {
@@ -140,8 +142,12 @@ function tabsUpdateListener(id,info,tab) {
 			});
 
 
-		},3000);
+		},100);
 	}
+}
+
+function tabsRemoveListener() {
+    // map.remove(id)
 }
 
 

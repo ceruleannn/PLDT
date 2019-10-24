@@ -37,7 +37,7 @@ import java.util.zip.ZipOutputStream;
 public class GetExtensionController {
 
     /**
-     * only for startup with [java -jar] way
+     * only for startup using [java -jar]
      */
     @GetMapping
     @ResponseBody
