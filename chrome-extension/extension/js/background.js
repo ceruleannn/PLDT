@@ -25,7 +25,7 @@ chrome.runtime.onInstalled.addListener(function (e) {
 });
 
 
-
+var logMap = new Map();
 var log_close = false;
 var cors_open = false;
 var notification_close = false;
@@ -124,30 +124,24 @@ $(function(){
 });
 
 function tabsUpdateListener(id,info,tab) {
-    console.log(info);
-    console.log(tab);
 
-	if (info.status === "complete"){
-		setTimeout(function () {
-			//console.log(tab);
-			chrome.tabs.get(id, function (activeTab) {
-                if(chrome.runtime.lastError) {
-                    notifyMsg(chrome.runtime.lastError.message);
-                    return;
-                }
-
-				if (!filterInWhite(activeTab.url, activeTab.title)){
-					postLog({url:activeTab.url, title:activeTab.title});
-				}
-			});
-
-
-		},100);
+	if (info.status === "loading"){	
+		logMap.set(id,tab.url);
 	}
+	if (info.title !== undefined){
+	    var url = logMap.get(id);
+		if (url !== undefined){
+            if (!filterInWhite(url, info.title)){
+                postLog({url:url, title:info.title});
+            }
+            logMap.delete(id);
+        }
+	}
+
 }
 
-function tabsRemoveListener() {
-    // map.remove(id)
+function tabsRemoveListener(id, info) {
+    logMap.delete(id);
 }
 
 
@@ -155,8 +149,10 @@ function logSwitch(log_close0) {
 	log_close = log_close0;
 	if (log_close0){
         chrome.tabs.onUpdated.removeListener(tabsUpdateListener);
+        chrome.tabs.onRemoved.removeListener(tabsRemoveListener);
     }else {
         chrome.tabs.onUpdated.addListener(tabsUpdateListener);
+        chrome.tabs.onRemoved.addListener(tabsRemoveListener);
     }
 }
 function corsSwitch(cors_open0) {
