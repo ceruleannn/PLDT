@@ -1,4 +1,4 @@
-package com.hyhello.priceless.dto;
+package com.hyhello.priceless.dto.resp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

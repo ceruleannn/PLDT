@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- *
+ * sb 异常捕获 返回code .500
  */
 @Controller
 @RequestMapping("/")

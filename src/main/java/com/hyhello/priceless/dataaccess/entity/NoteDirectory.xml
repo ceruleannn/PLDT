@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="com.hyhello.priceless.dataaccess.entity.NoteDirectory">
+        <table name="tb_note_directory" schema="hyhello" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="title">
+                <column name="title"/>
+            </basic>
+            <basic name="isFolder">
+                <column name="isFolder" precision="255"/>
+            </basic>
+            <basic name="expanded">
+                <column name="expanded" nullable="false" precision="3"/>
+            </basic>
+            <basic name="noteId">
+                <column name="noteId" precision="11"/>
+            </basic>
+            <basic name="parentId">
+                <column name="parentId" precision="11"/>
+            </basic>
+            <basic name="createTime">
+                <column name="createTime" precision="-1"/>
+            </basic>
+            <basic name="status">
+                <column name="status" precision="3"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

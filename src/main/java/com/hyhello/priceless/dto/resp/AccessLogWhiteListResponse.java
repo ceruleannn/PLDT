@@ -1,8 +1,6 @@
-package com.hyhello.priceless.dto;
+package com.hyhello.priceless.dto.resp;
 
 import com.hyhello.priceless.dataaccess.entity.AccessLogWhiteList;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
