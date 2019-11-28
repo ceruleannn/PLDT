@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * TODO
  * 事务
- * lazy load
+ * lazy loadDir
  */
 @Service
 public class NoteDirectoryService {
@@ -57,7 +57,7 @@ public class NoteDirectoryService {
 
         nodesMap.forEach((k, v) -> {
             String parentKey = v.getParentKey();
-            List<DirectoryNode> children = childrenMap.get(k);
+            List<DirectoryNode> children = childrenMap.get(parentKey);
             if (null == children) {
                 children = new ArrayList<>();
                 childrenMap.put(parentKey, children);

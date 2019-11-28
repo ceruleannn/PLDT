@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Response {
-    private int code;
-    private String msg;
+    protected int code = 200;
+    protected String msg = "";
 }

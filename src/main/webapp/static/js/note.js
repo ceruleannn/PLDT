@@ -2,7 +2,8 @@
 var CLIPBOARD = null;
 var tree = null;
 var directory = {};
-directory.save = function () {
+var note = {};
+directory.saveDir = function () {
     var dir = JSON.stringify(tree.toDict(false));
     $.ajax({
         headers: {
@@ -22,14 +23,14 @@ directory.save = function () {
     });
 }
 
-directory.load = function () {
+directory.loadDir = function () {
     $.ajax({
         type: "GET",
         url: "http://127.0.0.1/note/directory",
         dataType: "json",
         success: function(data){
-            tree.reload(data["directory"]);
             console.log(data);
+            tree.reload(data["directory"]);
         },
         error: function (error) {
             console.log(error);
@@ -38,28 +39,23 @@ directory.load = function () {
     });
 };
 
+note.getNote = function(noteId){
+    return $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1/note/" + noteId,
+        dataType: "json",
+    }).fail(function (error) {
+        console.log(error);
+    })
+};
 
-$(function () {  // on page load
+$(function () {  // on page loadDir
     // Create the tree inside the <div id="tree"> element.
     $("#tree").fancytree({
         extensions: ["edit", "filter", "glyph"],
-        source: [
-            {title: "Node 1", key: "1"},
-            {
-                title: "Folder 2", key: "2", folder: true, children: [
-                    {title: "Node 2.1", key: "3", id: "3666"},
-                    {title: "Node 2.2", key: "4"}
-                ]
-            },
-            {
-                title: "Folder 3", key: "5", folder: true, children: [
-                    {title: "Node 2.3", key: "6"},
-                    {title: "Node 2.4", key: "7"}
-                ]
-            }
-        ],
+        source:  [],
         glyph: {
-            preset: "awesome4",
+            preset: "bootstrap3",
             map: {}
         },
         edit: {
@@ -73,11 +69,20 @@ $(function () {  // on page load
                 // Typically we would also issue an Ajax request here to send the new data
                 // to the server (and handle potential errors when the asynchronous request
                 // returns).
-                if (data.save){
+                if (data.saveDir){
                     console.log(data.isNew);
                     console.log(data.input.val());
                 }
             }
+        },
+        activate: function(event, data){
+            var node = data.node;
+            if (node.folder == false){
+                note.getNote(node.key).done(function (data) {
+                    console.log(data["note"]["text"]);
+                })
+            }
+
         }
     }).on("nodeCommand", function (event, data) {
         // Custom event handler that is triggered by keydown-handler and
@@ -138,12 +143,12 @@ $(function () {  // on page load
 
             case "ctrl+c":
             case "meta+c": // mac
-                directory.save();
+                directory.saveDir();
                 break;
             case "ctrl+v":
             case "meta+v": // mac
                 cmd = "paste";
-                directory.load();
+                directory.loadDir();
                 break;
             case "ctrl+x":
             case "meta+x": // mac
@@ -165,34 +170,57 @@ $(function () {  // on page load
     tree = $("#tree").fancytree("getTree");
 
     $.contextMenu({
-        selector: '.fancytree-icon, .fancytree-title',
-        callback: function (key, options) {
-            if (key === "New File") {
-                tree.getActiveNode().editCreateNode("child", "new note");
-            } else if (key === "New Folder") {
-                tree.getActiveNode().editCreateNode("child", {title: "new folder", folder: true});
-            } else if (key === "Load"){
-                directory.load();
-            } else if (key === "Save"){
-                directory.save();
-            }
 
-            else {
-                $(this).trigger("nodeCommand", {cmd: options.commands[key].cmd});
+        selector: '.fancytree-plain.fancytree-container span.fancytree-node',
+
+        build: function($triggerElement, e){
+
+            var hoverNode = $.ui.fancytree.getNode($triggerElement);
+
+            var active = tree.getActiveNode();
+            if (active != null){
+                active.setActive(false);
+                active.setFocus(false);
             }
-        },
-        items: {
-            "New File": {name: "New File", icon: "fa-check" ,disabled: disableFileTypeMenu},
-            "New Folder": {name: "New Folder", icon: "fa-folder-o" , disabled: disableFileTypeMenu},
-            "sep1": "---------",
-            "Rename": {name: "Rename", icon: "edit", cmd: "rename"},
-            "Delete": {name: "Delete", icon: "delete", cmd: "remove"},
-            "Save": {name: "Save", icon: "edit"},
-            "Load": {name: "Load", icon: "edit"}
+            hoverNode.setActive(true);
+            hoverNode.setFocus(true);
+
+            return {
+                callback: function (key, options) {
+                    if (key === "New File") {
+                        tree.getActiveNode().editCreateNode("child", "new note");
+                    } else if (key === "New Folder") {
+                        tree.getActiveNode().editCreateNode("child", {title: "new folder", folder: true});
+                    } else if (key === "Load"){
+                        directory.loadDir();
+                    } else if (key === "Save"){
+                        directory.saveDir();
+                    }
+
+                    else {
+                        $(this).trigger("nodeCommand", {cmd: options.commands[key].cmd});
+                    }
+                },
+                items: {
+                    "New File": {name: "New File", icon: "fa-check" ,disabled: disableFileTypeMenu},
+                    "New Folder": {name: "New Folder", icon: "fa-folder-o" , disabled: disableFileTypeMenu},
+                    "sep1": "---------",
+                    "Rename": {name: "Rename", icon: "edit", cmd: "rename"},
+                    "Delete": {name: "Delete", icon: "delete", cmd: "remove"},
+                    "Save": {name: "Save", icon: "edit"},
+                    "Load": {name: "Load", icon: "edit"}
+                }
+            };
         }
     });
 
+    directory.loadDir();
 
+    //---------- editor -----------
+
+    var E = window.wangEditor;
+    var editor = new E('#editor');
+    editor.create();
 });
 
 /**

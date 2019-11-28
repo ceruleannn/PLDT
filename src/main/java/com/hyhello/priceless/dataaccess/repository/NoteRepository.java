@@ -20,5 +20,5 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
     @Query("select max(version) from Note where noteId = :noteId")
     public int getMaxVersion(@Param("noteId") int noteId);
 
-    public Note findByNoteIdOrderByVersionDesc(int noteId, Pageable pageable);
+    public Note findFirstByNoteIdOrderByVersionDesc(int noteId);
 }

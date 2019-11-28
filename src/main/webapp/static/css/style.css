@@ -1,0 +1,16 @@
+
+.directory-tree{
+    width: 15%;
+    float: left;
+}
+
+.editor{
+    width: 75%;
+    float: left;
+    margin-left: 5%;
+}
+
+.note-container {
+    display: block;
+    margin-top: 1%;
+}

@@ -47,7 +47,7 @@ public class NoteService {
         repository.save(note);
     }
 
-    public void getNote(int noteId){
-
+    public Note getNote(int noteId){
+        return repository.findFirstByNoteIdOrderByVersionDesc(noteId);
     }
 }

@@ -44,7 +44,7 @@ $.cleanData = ( function( orig ) {
 		for ( i = 0; ( elem = elems[ i ] ) != null; i++ ) {
 			try {
 
-				// Only trigger remove when necessary to save time
+				// Only trigger remove when necessary to saveDir time
 				events = $._data( elem, "events" );
 				if ( events && events.remove ) {
 					$( elem ).triggerHandler( "remove" );
@@ -462,7 +462,7 @@ $.Widget.prototype = {
 
 			// We are doing this to create a new jQuery object because the _removeClass() call
 			// on the next line is going to destroy the reference to the current elements being
-			// tracked. We need to save a copy of this collection so that we can add the new classes
+			// tracked. We need to saveDir a copy of this collection so that we can add the new classes
 			// below.
 			elements = $( currentElements.get() );
 			this._removeClass( currentElements, classKey );
@@ -1852,7 +1852,7 @@ var uniqueId = $.fn.extend( {
 		this.li = null; // <li id='key' ftnode=this> tag
 		this.statusNodeType = null; // if this is a temp. node to display the status of its parent
 		this._isLoading = false; // if this node itself is loading
-		this._error = null; // {message: '...'} if a load error occurred
+		this._error = null; // {message: '...'} if a loadDir error occurred
 		this.data = {};
 
 		// TODO: merge this code with node.toDict()
@@ -2563,7 +2563,7 @@ var uniqueId = $.fn.extend( {
 		getChildren: function() {
 			if (this.hasChildren() === undefined) {
 				// TODO: only required for lazy nodes?
-				return undefined; // Lazy node: unloaded, currently loading, or load error
+				return undefined; // Lazy node: unloaded, currently loading, or loadDir error
 			}
 			return this.children;
 		},
@@ -2749,7 +2749,7 @@ var uniqueId = $.fn.extend( {
 					this.children.length === 1 &&
 					this.children[0].isStatusNode()
 				) {
-					// Currently loading or load error
+					// Currently loading or loadDir error
 					return undefined;
 				}
 				return true;
@@ -2975,11 +2975,11 @@ var uniqueId = $.fn.extend( {
 			return true;
 		},
 		/** Deprecated.
-		 * @deprecated since 2014-02-16: use load() instead.
+		 * @deprecated since 2014-02-16: use loadDir() instead.
 		 */
 		lazyLoad: function(discard) {
 			this.warn(
-				"FancytreeNode.lazyLoad() is deprecated since 2014-02-16. Use .load() instead."
+				"FancytreeNode.lazyLoad() is deprecated since 2014-02-16. Use .loadDir() instead."
 			);
 			return this.load(discard);
 		},
@@ -2994,8 +2994,8 @@ var uniqueId = $.fn.extend( {
 				self = this,
 				wasExpanded = this.isExpanded();
 
-			_assert(this.isLazy(), "load() requires a lazy node");
-			// _assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-load a lazy node" );
+			_assert(this.isLazy(), "loadDir() requires a lazy node");
+			// _assert( forceReload || this.isUndefined(), "Pass forceReload=true to re-loadDir a lazy node" );
 			if (!forceReload && !this.isUndefined()) {
 				return _getResolvedPromise(this);
 			}
@@ -3853,7 +3853,7 @@ var uniqueId = $.fn.extend( {
 			}
 			return res;
 		},
-		/** Call fn(node) for all child nodes and recursively load lazy children.<br>
+		/** Call fn(node) for all child nodes and recursively loadDir lazy children.<br>
 		 * <b>Note:</b> If you need this method, you probably should consider to review
 		 * your architecture! Recursivley loading nodes is a perfect way for lazy
 		 * programmers to flood the server with requests ;-)
@@ -3883,9 +3883,9 @@ var uniqueId = $.fn.extend( {
 			}
 			dfd = new $.Deferred();
 			loaders = [];
-			// node.debug("load()...");
+			// node.debug("loadDir()...");
 			node.load().done(function() {
-				// node.debug("load()... done.");
+				// node.debug("loadDir()... done.");
 				for (var i = 0, l = node.children.length; i < l; i++) {
 					res = node.children[i].visitAndLoad(fn, true, true);
 					if (res === false) {
@@ -5016,7 +5016,7 @@ var uniqueId = $.fn.extend( {
 			}
 			// console.log("_loadKeyPathImpl AFTER pass 1, remainMap=", remainMap);
 
-			// Now load all lazy nodes and continue iteration for remaining paths
+			// Now loadDir all lazy nodes and continue iteration for remaining paths
 			deferredList = [];
 
 			// Avoid jshint warning 'Don't make functions within a loop.':
@@ -5341,7 +5341,7 @@ var uniqueId = $.fn.extend( {
 				// TODO: make sure clicks on embedded <input> doesn't steal focus (see table sample)
 				if (targetType === "expander") {
 					if (node.isLoading()) {
-						// #495: we probably got a click event while a lazy load is pending.
+						// #495: we probably got a click event while a lazy loadDir is pending.
 						// The 'expanded' state is not yet set, so 'toggle' would expand
 						// and trigger lazyLoad again.
 						// It would be better to allow to collapse/expand the status node
@@ -5584,14 +5584,14 @@ var uniqueId = $.fn.extend( {
 				if (source.url) {
 					if (node._requestId) {
 						node.warn(
-							"Recursive load request #" +
+							"Recursive loadDir request #" +
 								requestId +
 								" while #" +
 								node._requestId +
 								" is pending."
 						);
 						// } else {
-						// 	node.debug("Send load request #" + requestId);
+						// 	node.debug("Send loadDir request #" + requestId);
 					}
 					// `source` is an Ajax options object
 					ajax = $.extend({}, ctx.options.ajax, source);
@@ -5644,11 +5644,11 @@ var uniqueId = $.fn.extend( {
 						if (node._requestId && node._requestId > requestId) {
 							// The expected request time stamp is later than `requestId`
 							// (which was kept as as closure variable to this handler function)
-							// node.warn("Ignored load response for obsolete request #" + requestId + " (expected #" + node._requestId + ")");
+							// node.warn("Ignored loadDir response for obsolete request #" + requestId + " (expected #" + node._requestId + ")");
 							source.rejectWith(this, [RECURSIVE_REQUEST_ERROR]);
 							return;
 							// } else {
-							// 	node.debug("Response returned for load request #" + requestId);
+							// 	node.debug("Response returned for loadDir request #" + requestId);
 						}
 						// postProcess is similar to the standard ajax dataFilter hook,
 						// but it is also called for JSONP
@@ -5735,7 +5735,7 @@ var uniqueId = $.fn.extend( {
 				}
 				if ($.isFunction(source.promise)) {
 					// `source` is a deferred, i.e. ajax request
-					// _assert(!node.isLoading(), "recursive load");
+					// _assert(!node.isLoading(), "recursive loadDir");
 					tree.nodeSetStatus(ctx, "loading");
 
 					source
@@ -5748,7 +5748,7 @@ var uniqueId = $.fn.extend( {
 
 							if (error === RECURSIVE_REQUEST_ERROR) {
 								node.warn(
-									"Ignored response for obsolete load request #" +
+									"Ignored response for obsolete loadDir request #" +
 										requestId +
 										" (expected #" +
 										node._requestId +
@@ -6824,10 +6824,10 @@ var uniqueId = $.fn.extend( {
 
 				// Load lazy nodes, if any. Then continue with _afterLoad()
 				if (flag && node.lazy && node.hasChildren() === undefined) {
-					// node.debug("nodeSetExpanded: load start...");
+					// node.debug("nodeSetExpanded: loadDir start...");
 					node.load()
 						.done(function() {
-							// node.debug("nodeSetExpanded: load done");
+							// node.debug("nodeSetExpanded: loadDir done");
 							if (dfd.notifyWith) {
 								// requires jQuery 1.6+
 								dfd.notifyWith(node, ["loaded"]);
@@ -6839,22 +6839,22 @@ var uniqueId = $.fn.extend( {
 						.fail(function(errMsg) {
 							_afterLoad(function() {
 								dfd.rejectWith(node, [
-									"load failed (" + errMsg + ")",
+									"loadDir failed (" + errMsg + ")",
 								]);
 							});
 						});
 					/*
 					var source = tree._triggerNodeEvent("lazyLoad", node, ctx.originalEvent);
 					_assert(typeof source !== "boolean", "lazyLoad event must return source in data.result");
-					node.debug("nodeSetExpanded: load start...");
+					node.debug("nodeSetExpanded: loadDir start...");
 					this._callHook("nodeLoadChildren", ctx, source).done(function(){
-						node.debug("nodeSetExpanded: load done");
+						node.debug("nodeSetExpanded: loadDir done");
 						if(dfd.notifyWith){ // requires jQuery 1.6+
 							dfd.notifyWith(node, ["loaded"]);
 						}
 						_afterLoad.call(tree);
 					}).fail(function(errMsg){
-						dfd.rejectWith(node, ["load failed (" + errMsg + ")"]);
+						dfd.rejectWith(node, ["loadDir failed (" + errMsg + ")"]);
 					});
 					*/
 				} else {
@@ -10564,7 +10564,7 @@ var uniqueId = $.fn.extend( {
 
 	/**
 	 * [ext-edit] Stop inline editing.
-	 * @param {Boolean} [applyChanges=false] false: cancel edit, true: save (if modified)
+	 * @param {Boolean} [applyChanges=false] false: cancel edit, true: saveDir (if modified)
 	 * @alias FancytreeNode#editEnd
 	 * @requires jquery.fancytree.edit.js
 	 */
@@ -10592,15 +10592,15 @@ var uniqueId = $.fn.extend( {
 		// Find out, if saving is required
 		if (applyChanges === false) {
 			// If true/false was passed, honor this (except in rename mode, if unchanged)
-			eventData.save = false;
+			eventData.saveDir = false;
 		} else if (eventData.isNew) {
-			// In create mode, we save everything, except for empty text
-			eventData.save = newVal !== "";
+			// In create mode, we saveDir everything, except for empty text
+			eventData.saveDir = newVal !== "";
 		} else {
-			// In rename mode, we save everyting, except for empty or unchanged text
-			eventData.save = eventData.dirty && newVal !== "";
+			// In rename mode, we saveDir everyting, except for empty or unchanged text
+			eventData.saveDir = eventData.dirty && newVal !== "";
 		}
-		// Allow to break (keep editor open), modify input, or re-define data.save
+		// Allow to break (keep editor open), modify input, or re-define data.saveDir
 		if (
 			instOpts.beforeClose.call(
 				node,
@@ -10612,7 +10612,7 @@ var uniqueId = $.fn.extend( {
 		}
 		if (
 			eventData.save &&
-			instOpts.save.call(node, { type: "save" }, eventData) === false
+			instOpts.save.call(node, { type: "saveDir" }, eventData) === false
 		) {
 			return false;
 		}
@@ -10740,9 +10740,9 @@ var uniqueId = $.fn.extend( {
 			inputCss: { minWidth: "3em" },
 			// triggerCancel: ["esc", "tab", "click"],
 			triggerStart: ["f2", "mac+enter", "shift+click"],
-			trim: true, // Trim whitespace before save
+			trim: true, // Trim whitespace before saveDir
 			// Events:
-			beforeClose: $.noop, // Return false to prevent cancel/save (data.input is available)
+			beforeClose: $.noop, // Return false to prevent cancel/saveDir (data.input is available)
 			beforeEdit: $.noop, // Return false to prevent edit mode
 			close: $.noop, // Editor was removed
 			edit: $.noop, // Editor was opened (available as data.input)
@@ -11899,7 +11899,7 @@ var uniqueId = $.fn.extend( {
 			allowNoSelect: false, //
 			mode: "sameParent", //
 			// Events:
-			// beforeSelect: $.noop  // Return false to prevent cancel/save (data.input is available)
+			// beforeSelect: $.noop  // Return false to prevent cancel/saveDir (data.input is available)
 		},
 
 		treeInit: function(ctx) {
@@ -12071,8 +12071,8 @@ var uniqueId = $.fn.extend( {
 		};
 	}
 
-	/* Recursively load lazy nodes
-	 * @param {string} mode 'load', 'expand', false
+	/* Recursively loadDir lazy nodes
+	 * @param {string} mode 'loadDir', 'expand', false
 	 */
 	function _loadLazyNodes(tree, local, keyList, mode, dfd) {
 		var i,
@@ -12119,7 +12119,7 @@ var uniqueId = $.fn.extend( {
 			} else {
 				if (missingKeyList.length) {
 					tree.warn(
-						"_loadLazyNodes: could not load those keys: ",
+						"_loadLazyNodes: could not loadDir those keys: ",
 						missingKeyList
 					);
 					for (i = 0, l = missingKeyList.length; i < l; i++) {
@@ -12208,7 +12208,7 @@ var uniqueId = $.fn.extend( {
 				domain: "",
 				secure: false,
 			},
-			expandLazy: false, // true: recursively expand and load lazy nodes
+			expandLazy: false, // true: recursively expand and loadDir lazy nodes
 			expandOpts: undefined, // optional `opts` argument passed to setExpanded()
 			fireActivate: true, // false: suppress `activate` event after active node was restored
 			overrideSource: true, // true: cookie takes precedence over `source` data attributes.
@@ -12310,7 +12310,7 @@ var uniqueId = $.fn.extend( {
 				keyList = cookie && cookie.split(instOpts.cookieDelimiter);
 
 				if (local.storeExpanded) {
-					// Recursively load nested lazy nodes if expandLazy is 'expand' or 'load'
+					// Recursively loadDir nested lazy nodes if expandLazy is 'expand' or 'loadDir'
 					// Also remove expand-cookies for unmatched nodes
 					dfd = _loadLazyNodes(
 						tree,

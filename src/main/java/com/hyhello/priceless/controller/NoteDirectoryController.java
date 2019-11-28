@@ -24,7 +24,7 @@ public class NoteDirectoryController {
         this.service = service;
     }
 
-    @PostMapping
+    @PutMapping
     @ResponseBody
     public Response update(@RequestBody List<DirectoryNode> dir) throws IOException {
         service.update(dir);
