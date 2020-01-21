@@ -31,6 +31,12 @@ public class NoteDirectoryController {
         return new Response(200, "更新目录成功!");
     }
 
+    @DeleteMapping("/{nodeId}")
+    @ResponseBody
+    public Response delete(@PathVariable int nodeId) throws IOException {
+        return service.deleteNode(nodeId);
+    }
+
     @GetMapping
     @ResponseBody
     public Response get(String dir) throws IOException {
@@ -38,10 +44,10 @@ public class NoteDirectoryController {
         return new NoteDirectoryResponse(200, "更新目录成功!", result);
     }
 
-    @PostMapping
-    @ResponseBody
-    public Response newFile() throws IOException {
-        return new Response(200, "更新目录成功!");
-    }
+//    @PostMapping
+//    @ResponseBody
+//    public Response newFile() throws IOException {
+//        return new Response(200, "更新目录成功!");
+//    }
 
 }

@@ -23,5 +23,5 @@ public class DirectoryNode {
     private Map<String, Object> data = new HashMap<>();
 
     @JsonIgnore
-    private String parentKey;
+    private Integer parentId;
 }

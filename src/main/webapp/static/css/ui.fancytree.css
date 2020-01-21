@@ -64,7 +64,7 @@ ul.fancytree-container {
   margin: 0;
   background-color: white;
   border: 1px dotted gray;
-  min-height: 0%;
+  min-height: 632px;
   position: relative;
 }
 ul.fancytree-container ul {

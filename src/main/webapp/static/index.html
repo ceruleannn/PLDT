@@ -12,11 +12,12 @@
     <link href="/static/css/ui.fancytree.css" rel="stylesheet">
     <link href="/static/css/style.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 
     <script src="/static/js/jquery-3.4.1.min.js"></script>
     <script src="/static/js/jquery.fancytree-all-deps.js"></script>
+    <script src="/static/js/jquery.fancytree.edit.js"></script>
     <script src="/static/js/jquery.contextMenu.min.js"></script>
     <script src="/static/js/jquery.ui.position.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -29,7 +30,13 @@
 <body>
 <div class="note-container">
     <div id="tree" class="directory-tree"></div>
-    <div id="editor" class="editor"></div>
+    <div class="editor">
+        <div id="div1" class="toolbar"></div>
+        <div id="div2" class="text"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+
+        </div>
+    </div>
+
 </div>
 
 </body>

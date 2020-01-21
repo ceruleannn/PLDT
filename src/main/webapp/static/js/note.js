@@ -1,27 +1,36 @@
 
 var CLIPBOARD = null;
 var tree = null;
+var editor = null;
 var directory = {};
 var note = {};
+
 directory.saveDir = function () {
     var dir = JSON.stringify(tree.toDict(false));
-    $.ajax({
+    return $.ajax({
         headers: {
             'Content-Type': 'application/json'
         },
-        type: "POST",
+        type: "PUT",
         url: "http://127.0.0.1/note/directory",
         data: dir,
         dataType: "json",
-        success: function(data){
-            console.log(data);
-        },
-        error: function (error) {
-            console.log(error);
-            notifyMsg("笔记目录保存失败!  (⇀‸↼‶) \n"  + param.url);
-        }
+    }).fail(function (error) {
+        console.log(error);
+        alert("error" + error);
     });
-}
+};
+
+directory.deleteDir = function (nodeId) {
+    return $.ajax({
+        type: "DELETE",
+        url: "http://127.0.0.1/note/directory/" + nodeId,
+        dataType: "json",
+    }).fail(function (error) {
+        console.log(error);
+        alert("error" + error);
+    });
+};
 
 directory.loadDir = function () {
     $.ajax({
@@ -34,7 +43,6 @@ directory.loadDir = function () {
         },
         error: function (error) {
             console.log(error);
-            notifyMsg("笔记目录获取失败!  (⇀‸↼‶) \n"  + param.url);
         }
     });
 };
@@ -43,6 +51,17 @@ note.getNote = function(noteId){
     return $.ajax({
         type: "GET",
         url: "http://127.0.0.1/note/" + noteId,
+        dataType: "json",
+    }).fail(function (error) {
+        console.log(error);
+    })
+};
+
+note.saveNote = function(noteId, text){
+    return $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1/note/" + noteId,
+        data: {text:text},
         dataType: "json",
     }).fail(function (error) {
         console.log(error);
@@ -59,7 +78,7 @@ $(function () {  // on page loadDir
             map: {}
         },
         edit: {
-            save: function(event, data){
+            close: function(event, data){
                 // Only called when the text was modified and the user pressed enter or
                 // the <input> lost focus.
                 // Additional information is available (see `beforeClose`).
@@ -69,20 +88,18 @@ $(function () {  // on page loadDir
                 // Typically we would also issue an Ajax request here to send the new data
                 // to the server (and handle potential errors when the asynchronous request
                 // returns).
-                if (data.saveDir){
-                    console.log(data.isNew);
-                    console.log(data.input.val());
-                }
+
+                //新数据 加到数据库之后reload
+                console.log(data.isNew);
+
+                directory.saveDir().done(() => directory.loadDir());
             }
         },
         activate: function(event, data){
             var node = data.node;
-            if (node.folder == false){
-                note.getNote(node.key).done(function (data) {
-                    console.log(data["note"]["text"]);
-                })
-            }
-
+            note.getNote(node.key).done(function (data) {
+                editor.txt.html(data["note"]["text"]);
+            })
         }
     }).on("nodeCommand", function (event, data) {
         // Custom event handler that is triggered by keydown-handler and
@@ -100,9 +117,15 @@ $(function () {  // on page loadDir
             case "moveUp":
             case "outdent":
             case "remove":
-                console.log("remove");
-                // ajax remove
-                tree.applyCommand(data.cmd, node);
+                directory.deleteDir(node.data.id).done(function (data) {
+
+                    if (data["code"] < 500){
+                        tree.applyCommand("remove", node);
+                    }else {
+                        console.log(data);
+                        alert(data["code"] + " - " + data["msg"]);
+                    }
+                });
                 break;
             case "rename":
                 tree.applyCommand(data.cmd, node);
@@ -190,14 +213,13 @@ $(function () {  // on page loadDir
                     if (key === "New File") {
                         tree.getActiveNode().editCreateNode("child", "new note");
                     } else if (key === "New Folder") {
-                        tree.getActiveNode().editCreateNode("child", {title: "new folder", folder: true});
+                        tree.getActiveNode().editCreateNode("child", {title: "new folder1", folder: true});
                     } else if (key === "Load"){
                         directory.loadDir();
                     } else if (key === "Save"){
                         directory.saveDir();
-                    }
-
-                    else {
+                        var text = editor.txt.html();
+                    } else {
                         $(this).trigger("nodeCommand", {cmd: options.commands[key].cmd});
                     }
                 },
@@ -209,6 +231,7 @@ $(function () {  // on page loadDir
                     "Delete": {name: "Delete", icon: "delete", cmd: "remove"},
                     "Save": {name: "Save", icon: "edit"},
                     "Load": {name: "Load", icon: "edit"}
+
                 }
             };
         }
@@ -219,7 +242,7 @@ $(function () {  // on page loadDir
     //---------- editor -----------
 
     var E = window.wangEditor;
-    var editor = new E('#editor');
+    editor = new E('#div1', '#div2');
     editor.create();
 });
 

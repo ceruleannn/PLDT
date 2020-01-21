@@ -22,14 +22,14 @@ public class NoteService {
         this.repository = repository;
     }
 
-    public void createNote(){
+    public Note createNote(){
         Note note = new Note();
         note.setUid(1);
         note.setVersion(1);
         note.setText("");
         note.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
         note.setNoteId(repository.getMaxNoteId() + 1);
-        repository.save(note);
+        return repository.save(note);
     }
 
     public void deleteNote(){
