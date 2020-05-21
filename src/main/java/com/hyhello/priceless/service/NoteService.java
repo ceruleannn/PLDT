@@ -32,8 +32,8 @@ public class NoteService {
         return repository.save(note);
     }
 
-    public void deleteNote(){
-
+    public void deleteNote(int nid){
+        repository.deleteById(nid);
     }
 
     public void updateNote(int noteId, String text){

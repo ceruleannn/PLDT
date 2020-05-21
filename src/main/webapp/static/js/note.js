@@ -2,51 +2,80 @@
 var CLIPBOARD = null;
 var tree = null;
 var editor = null;
-var directory = {};
+var directory = {
+    saveDir: function () {
+        var dir = JSON.stringify(tree.toDict(false));
+        return $.ajax({
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            type: "PUT",
+            url: "http://127.0.0.1/note/directory",
+            data: dir,
+            dataType: "json",
+        }).fail(function (error) {
+            console.log(error);
+            alert("error" + error);
+        });
+    },
+
+    deleteDir: function (nodeId) {
+        return $.ajax({
+            type: "DELETE",
+            url: "http://127.0.0.1/note/directory/" + nodeId,
+            dataType: "json",
+        }).fail(function (error) {
+            console.log(error);
+            alert("error" + error);
+        });
+    },
+
+    renameDir: function (dict) {
+        return $.ajax({
+            type: "PUT",
+            url: "http://127.0.0.1/note/directory/rename",
+            dataType: "json",
+            data: dict,
+        }).fail(function (error) {
+            console.log(error);
+            alert("error" + error);
+        });
+    },
+
+    newDir: function (dict) {
+        return $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1/note/directory",
+            dataType: "json",
+            data: dict,
+        }).fail(function (error) {
+            console.log(error);
+            alert("error" + error);
+        });
+    },
+
+    loadDir: function () {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1/note/directory",
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+                tree.reload(data["directory"]);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+};
+
 var note = {};
 
-directory.saveDir = function () {
-    var dir = JSON.stringify(tree.toDict(false));
-    return $.ajax({
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        type: "PUT",
-        url: "http://127.0.0.1/note/directory",
-        data: dir,
-        dataType: "json",
-    }).fail(function (error) {
-        console.log(error);
-        alert("error" + error);
-    });
-};
-
-directory.deleteDir = function (nodeId) {
-    return $.ajax({
-        type: "DELETE",
-        url: "http://127.0.0.1/note/directory/" + nodeId,
-        dataType: "json",
-    }).fail(function (error) {
-        console.log(error);
-        alert("error" + error);
-    });
-};
-
-directory.loadDir = function () {
-    $.ajax({
-        type: "GET",
-        url: "http://127.0.0.1/note/directory",
-        dataType: "json",
-        success: function(data){
-            console.log(data);
-            tree.reload(data["directory"]);
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
-};
-
+/**
+ * 获取文档内容
+ * @returns {Deferred}
+ */
 note.getNote = function(noteId){
     return $.ajax({
         type: "GET",
@@ -57,6 +86,10 @@ note.getNote = function(noteId){
     })
 };
 
+/**
+ * 保存文档内容
+ * @returns {Deferred}
+ */
 note.saveNote = function(noteId, text){
     return $.ajax({
         type: "POST",
@@ -89,15 +122,24 @@ $(function () {  // on page loadDir
                 // to the server (and handle potential errors when the asynchronous request
                 // returns).
 
-                //新数据 加到数据库之后reload
-                console.log(data.isNew);
+                var dict = data.node.toDict();
+                dict.parentId = data.node.parent.data.id;
+                if (data.isNew){
+                    directory.newDir(dict).done(re => {
+                        //TODO invalid
+                        data.node.fromDict(re["directory"]);
+                        console.log( data.node);
+                    });
+                }else {
+                    directory.renameDir(dict);
+                }
 
-                directory.saveDir().done(() => directory.loadDir());
+                //directory.saveDir().done(() => directory.loadDir());
             }
         },
         activate: function(event, data){
             var node = data.node;
-            note.getNote(node.key).done(function (data) {
+            note.getNote(node.key).done(data => {
                 editor.txt.html(data["note"]["text"]);
             })
         }

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,12 +12,12 @@ import java.util.Map;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DirectoryNode {
+public class Node {
     private String key;
-    private String title;
     private boolean folder;
+    private String title;
     private boolean expanded;
-    private DirectoryNode[] children;
+    private Node[] children;
     private Map<String, Object> data = new HashMap<>();
 
     @JsonIgnore

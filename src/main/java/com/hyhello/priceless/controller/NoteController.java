@@ -1,16 +1,13 @@
 package com.hyhello.priceless.controller;
 
 import com.hyhello.priceless.dataaccess.entity.Note;
-import com.hyhello.priceless.dto.DirectoryNode;
 import com.hyhello.priceless.dto.resp.NoteResponse;
 import com.hyhello.priceless.dto.resp.Response;
-import com.hyhello.priceless.service.NoteDirectoryService;
 import com.hyhello.priceless.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  *

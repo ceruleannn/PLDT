@@ -3,7 +3,7 @@ package com.hyhello.priceless.service;
 import com.hyhello.priceless.dataaccess.entity.Note;
 import com.hyhello.priceless.dataaccess.entity.NoteDirectory;
 import com.hyhello.priceless.dataaccess.repository.NoteDirectoryRepository;
-import com.hyhello.priceless.dto.DirectoryNode;
+import com.hyhello.priceless.dto.Node;
 
 import static com.hyhello.priceless.utils.JavaUtils.*;
 
@@ -13,6 +13,7 @@ import com.hyhello.priceless.utils.JavaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -25,8 +26,10 @@ import java.util.stream.Collectors;
  * TODO
  * 事务
  * lazy loadDir
- * Save 未保存confirm
- * add seq updateTime
+ *
+ * add seq updateTime seq上移和下移
+ * (右键)当前note不再请求多次 切换/保存 Save 未保存confirm
+ * data map??
  */
 @Service
 public class NoteDirectoryService {
@@ -41,26 +44,27 @@ public class NoteDirectoryService {
     }
 
     @Transactional
-    public void update(List<DirectoryNode> roots) throws IOException {
+    public Response update(List<Node> roots) throws IOException {
         List<NoteDirectory> entities = new ArrayList<>();
         roots.forEach(r -> nodes2Entities(entities, r, 0));
         directoryRepository.saveAll(entities);
+        return NoteDirectoryResponse.SUCCESS;
     }
 
-    public List<DirectoryNode> get() {
+    public List<Node> get() {
         List<NoteDirectory> directories = directoryRepository.findAll();
-        Map<String, DirectoryNode> nodesMap = directories
+        Map<String, Node> nodesMap = directories
                 .stream()
                 .map(NoteDirectoryService::entity2Node)
                 .sorted(Comparator.comparing(node -> (LocalDateTime)node.getData().get("createTime")))
-                .collect(Collectors.toMap(DirectoryNode::getKey, Function.identity(),(u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); }, LinkedHashMap::new));
+                .collect(Collectors.toMap(Node::getKey, Function.identity(),(u, v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); }, LinkedHashMap::new));
 
         //<parentId, childrenList>
-        Map<Integer, List<DirectoryNode>> childrenMap = new HashMap<>();
+        Map<Integer, List<Node>> childrenMap = new HashMap<>();
 
         nodesMap.forEach((k, v) -> {
             Integer parentId = v.getParentId();
-            List<DirectoryNode> children = childrenMap.get(parentId);
+            List<Node> children = childrenMap.get(parentId);
             if (null == children) {
                 children = new ArrayList<>();
                 childrenMap.put(parentId, children);
@@ -68,10 +72,10 @@ public class NoteDirectoryService {
             children.add(v);
         });
 
-        List<DirectoryNode> result = new ArrayList<>();
+        List<Node> result = new ArrayList<>();
 
         // find directories which parentId = 0
-        List<DirectoryNode> roots = childrenMap.get(0);
+        List<Node> roots = childrenMap.get(0);
         if (roots != null){
             roots.forEach( r -> {
                 Entities2Nodes(childrenMap, r);
@@ -83,13 +87,31 @@ public class NoteDirectoryService {
         //return result.stream().sorted(Comparator.comparing(node -> (LocalDateTime)node.getData().get("createTime"))).collect(Collectors.toList());
     }
 
-    public Response renameNode(int nodeId, String newName){
-        Optional<NoteDirectory> optionalNoteDirectory = directoryRepository.findById(nodeId);
+    public Response addNode(Node newNode){
+
+        NoteDirectory entity = new NoteDirectory();
+        Note note  = noteService.createNote();
+        entity.setNoteId(note.getNoteId());
+        entity.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+        entity.setParentId(newNode.getParentId());
+        entity.setTitle(newNode.getTitle());
+        entity.setIsFolder(parseBoolean2Byte(newNode.isFolder()));
+        entity.setExpanded(parseBoolean2Byte(newNode.isExpanded()));
+
+        entity = directoryRepository.save(entity);
+
+        List<Node> nodes = new ArrayList<>();
+        nodes.add(entity2Node(entity));
+        return new NoteDirectoryResponse(NoteDirectoryResponse.SUCCESS, nodes);
+    }
+
+    public Response renameNode(Node newNode){
+        Optional<NoteDirectory> optionalNoteDirectory = directoryRepository.findById(Integer.valueOf((String)newNode.getData().get("id")));
         if (!optionalNoteDirectory.isPresent()){
             return NoteDirectoryResponse.NOT_EXIST_NODE;
         }
         NoteDirectory noteDirectory = optionalNoteDirectory.get();
-        noteDirectory.setTitle(newName);
+        noteDirectory.setTitle(newNode.getTitle());
         directoryRepository.save(noteDirectory);
 
         return NoteDirectoryResponse.SUCCESS;
@@ -108,6 +130,11 @@ public class NoteDirectoryService {
                 return NoteDirectoryResponse.REMOVE_NOT_EMPTY_FOLDER;
             }
         }
+        Note note = noteService.getNote(noteDirectory.getNoteId());
+        if (StringUtils.isEmpty(note.getText())){
+            noteService.deleteNote(note.getId());
+        }
+
         directoryRepository.delete(noteDirectory);
         return NoteDirectoryResponse.SUCCESS;
     }
@@ -117,7 +144,7 @@ public class NoteDirectoryService {
      *     遇到新增节点时直接insert
      */
 
-    private void nodes2Entities(List<NoteDirectory> directories, DirectoryNode node, int parentId) {
+    private void nodes2Entities(List<NoteDirectory> directories, Node node, int parentId) {
 
         NoteDirectory entity = new NoteDirectory();
 
@@ -140,9 +167,9 @@ public class NoteDirectoryService {
         entity.setExpanded(parseBoolean2Byte(node.isExpanded()));
         directories.add(entity);
 
-        DirectoryNode[] children = node.getChildren();
+        Node[] children = node.getChildren();
         if (children != null) {
-            for (DirectoryNode child : children) {
+            for (Node child : children) {
                 nodes2Entities(directories, child, id);
             }
         }
@@ -151,12 +178,12 @@ public class NoteDirectoryService {
     /**
      *  noteDirectory 转 directoryNode
      */
-    private void Entities2Nodes(Map<Integer, List<DirectoryNode>> childrenMap, DirectoryNode node){
-        List<DirectoryNode> children = childrenMap.get((Integer)node.getData().get("id"));
+    private void Entities2Nodes(Map<Integer, List<Node>> childrenMap, Node node){
+        List<Node> children = childrenMap.get((Integer)node.getData().get("id"));
         if (children != null && !children.isEmpty()) {
-            DirectoryNode[] nodeArr = new DirectoryNode[children.size()];
+            Node[] nodeArr = new Node[children.size()];
             node.setChildren(children.toArray(nodeArr));
-            for (DirectoryNode child : children) {
+            for (Node child : children) {
                 Entities2Nodes(childrenMap, child);
             }
         }
@@ -165,8 +192,8 @@ public class NoteDirectoryService {
     /**
      * 数据库实体转前端目录树 Node节点, 忽略children属性
      */
-    private static DirectoryNode entity2Node(NoteDirectory noteDirectory) {
-        DirectoryNode node = new DirectoryNode();
+    private static Node entity2Node(NoteDirectory noteDirectory) {
+        Node node = new Node();
         node.getData().put("id", noteDirectory.getId());
         node.getData().put("createTime", noteDirectory.getCreateTime().toLocalDateTime());
         node.setTitle(noteDirectory.getTitle());
