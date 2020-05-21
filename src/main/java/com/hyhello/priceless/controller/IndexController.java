@@ -7,11 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * sb 异常捕获 返回code .500
  */
 @Controller
-@RequestMapping("/")
 public class IndexController {
 
-    @RequestMapping("/")
+    @RequestMapping("/index")
     public String index(){
-        return "/static/index.html";
+        return "static/index.html";
+    }
+
+    @RequestMapping("/")
+    public String homepage(){
+        return "static/homepage.html";
     }
 }
