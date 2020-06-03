@@ -3,30 +3,27 @@ package com.hyhello.priceless.controller;
 import com.hyhello.priceless.dataaccess.entity.Note;
 import com.hyhello.priceless.dto.resp.NoteResponse;
 import com.hyhello.priceless.dto.resp.Response;
+import com.hyhello.priceless.service.FavoriteService;
 import com.hyhello.priceless.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-/**
- *
- */
 @RestController
-@RequestMapping("/note")
-public class NoteController {
+@RequestMapping("/favorite")
+public class FavoriteController {
 
-    private final NoteService service;
+    private FavoriteService favoriteService;
 
     @Autowired
-    public NoteController(NoteService service) {
-        this.service = service;
+    public FavoriteController(FavoriteService service) {
+        this.favoriteService = service;
     }
 
-    @GetMapping("/{noteId}")
+    @PutMapping
     @ResponseBody
-    public Response getNote(@PathVariable int noteId) throws IOException {
-        Note note = service.getNote(noteId);
-        return new NoteResponse(note);
+    public Response add() throws IOException {
+        return new Response("");
     }
 }

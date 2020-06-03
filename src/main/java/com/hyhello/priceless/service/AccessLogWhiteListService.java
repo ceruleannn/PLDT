@@ -1,5 +1,6 @@
 package com.hyhello.priceless.service;
 
+import com.hyhello.priceless.config.TokenConfig;
 import com.hyhello.priceless.dataaccess.entity.AccessLog;
 import com.hyhello.priceless.dataaccess.entity.AccessLogWhiteList;
 import com.hyhello.priceless.dataaccess.repository.AccessLogWhiteListRepository;
