@@ -18,6 +18,7 @@ public class YouGetTest {
             String filename = null;
             boolean succ = false;
             for (String s: list) {
+                System.out.println(s);
                 if (s.startsWith("Downloading ")) {
                     int index = s.indexOf("...");
                     filename = s.substring(12,index);

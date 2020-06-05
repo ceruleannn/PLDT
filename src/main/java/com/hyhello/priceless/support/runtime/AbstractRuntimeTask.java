@@ -1,17 +1,23 @@
 package com.hyhello.priceless.support.runtime;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-
-public abstract class AbstractRuntimeTask {
+@Slf4j
+public abstract class AbstractRuntimeTask implements Runnable{
 
     public abstract String getcmd();
     public abstract long getTimeoutMillis();
     public abstract Consumer<List<String>> getCallback();
 
-    public void doexec() throws IOException{
-        RuntimeSupport.exec(getcmd(), getTimeoutMillis(), getCallback());
+    public void run() {
+        try {
+            RuntimeSupport.exec(getcmd(), getTimeoutMillis(), getCallback());
+        } catch (IOException e) {
+            log.error("IOException in AbstractRuntimeTask", e);
+        }
     }
 }

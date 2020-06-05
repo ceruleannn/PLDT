@@ -29,7 +29,7 @@ public class LogObservable extends Observable {
 
     @Override
     public void addObserver(Observer o) {
-        MarkerFactory.getMarker("");
+        //TODO marker subscribe
         super.addObserver(o);
     }
 }

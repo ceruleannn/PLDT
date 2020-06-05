@@ -1,7 +1,9 @@
 package com.hyhello.priceless;
 
 import com.hyhello.priceless.config.CommonConfig;
+import com.hyhello.priceless.module.youget.YouGetHandler;
 import com.hyhello.priceless.module.youget.YouGetRuntimeTask;
+import com.hyhello.priceless.module.youget.YouGetService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MarkerFactory;
 import org.springframework.boot.SpringApplication;
@@ -26,12 +28,15 @@ public class PricelessDataApplication {
         //Map<String, TokenConfig> map = context.getBeansOfType(TokenConfig.class);
         //map.values().forEach(System.out::println);
 
-        //TODO RUNNABLE
-        YouGetRuntimeTask task = new YouGetRuntimeTask("https://www.bilibili.com/video/av301");
-        //task.doexec();
 
-        log.info(MarkerFactory.getMarker("m1"), "debug marker");
-        //TRACE , MARKER PATTERN / SEARCH
+        YouGetHandler handler = (url, file) -> {
+            System.out.println(file.getName());
+        };
+        YouGetService service = context.getBean(YouGetService.class);
+        service.offerTask("https://www.bilibili.com/video/av301", handler);
+
+
+        //log.info(MarkerFactory.getMarker("m1"), "debug marker");
     }
 
 }

@@ -24,13 +24,12 @@ public class MyAppender extends AppenderBase<ILoggingEvent>{
     public void append(ILoggingEvent event) {
         // output the events as formatted by our layout
         byte[] bytes;
-        if (event instanceof  LoggingEvent){
+        if (event instanceof LoggingEvent){
             LoggingEvent loggingEvent = (LoggingEvent) event;
             loggingEvent.setMarker(MarkerFactory.getMarker("SYSTEM"));
-            bytes = this.encoder.encode(loggingEvent);
-        }else {
-            bytes = this.encoder.encode(event);
+            event = loggingEvent;
         }
+        bytes = this.encoder.encode(event);
         LogObservable.getInstance().update(event.getMarker(),new String(bytes));
 
     }

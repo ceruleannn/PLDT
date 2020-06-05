@@ -1,10 +1,13 @@
 package com.hyhello.priceless.support.runtime;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Slf4j
 public class RuntimeSupport {
 
     public static void exec(String command, long timeoutMills, Consumer<List<String>> c) throws IOException{ 
@@ -25,6 +28,7 @@ public class RuntimeSupport {
         List<String> lines = new ArrayList<String>();
         String line;
         while ((line = brs.readLine()) != null) {
+            log.info("Command: " + line);
             lines.add(line);
         }
         
