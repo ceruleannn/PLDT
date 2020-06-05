@@ -23,7 +23,8 @@ public class FavoriteController {
 
     @PutMapping
     @ResponseBody
-    public Response add() throws IOException {
+    public Response addFavorite(String url) throws IOException {
+        favoriteService.addFavorite(url);
         return new Response("");
     }
 }

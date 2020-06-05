@@ -17,5 +17,6 @@ public class TokenConfig {
     private String datasourcePassword;
     private String tencentSecretId;
     private String tencentSecretKey;
+    private String cosAppId;
 
 }
