@@ -2,7 +2,7 @@ package com.hyhello.priceless.service;
 
 import com.hyhello.priceless.dataaccess.entity.AccessLog;
 import com.hyhello.priceless.dataaccess.repository.AccessLogRepository;
-import com.hyhello.priceless.utils.StringUtils;
+import com.hyhello.priceless.utils.UrlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +48,7 @@ public class AccessLogService {
 
     public void saveAccessLog(AccessLog accessLog){
 
-        accessLog.setHost(StringUtils.getHost(accessLog.getUrl()));
+        accessLog.setHost(UrlUtils.getHost(accessLog.getUrl()));
         accessLog.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
         accessLog.setMark("test");
         accessLog.setLocation("hlx");

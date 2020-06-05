@@ -8,7 +8,7 @@ import java.net.URL;
 /**
  *
  */
-public class StringUtils {
+public class UrlUtils {
 
     public static String getHost(String link){
         try {
@@ -18,5 +18,4 @@ public class StringUtils {
             return "";
         }
     }
-
 }
