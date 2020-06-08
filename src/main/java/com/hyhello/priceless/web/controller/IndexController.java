@@ -1,4 +1,4 @@
-package com.hyhello.priceless.controller;
+package com.hyhello.priceless.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

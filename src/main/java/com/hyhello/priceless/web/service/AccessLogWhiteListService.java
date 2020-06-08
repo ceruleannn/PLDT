@@ -1,4 +1,4 @@
-package com.hyhello.priceless.service;
+package com.hyhello.priceless.web.service;
 
 import com.hyhello.priceless.dataaccess.entity.AccessLogWhiteList;
 import com.hyhello.priceless.dataaccess.repository.AccessLogWhiteListRepository;

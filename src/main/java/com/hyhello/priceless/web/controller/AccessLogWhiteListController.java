@@ -1,9 +1,9 @@
-package com.hyhello.priceless.controller;
+package com.hyhello.priceless.web.controller;
 
 import com.hyhello.priceless.dataaccess.entity.AccessLogWhiteList;
 import com.hyhello.priceless.dto.resp.AccessLogWhiteListResponse;
 import com.hyhello.priceless.dto.resp.Response;
-import com.hyhello.priceless.service.AccessLogWhiteListService;
+import com.hyhello.priceless.web.service.AccessLogWhiteListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

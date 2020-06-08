@@ -1,9 +1,9 @@
-package com.hyhello.priceless.controller;
+package com.hyhello.priceless.web.controller;
 
 import com.hyhello.priceless.dataaccess.entity.Note;
 import com.hyhello.priceless.dto.resp.NoteResponse;
 import com.hyhello.priceless.dto.resp.Response;
-import com.hyhello.priceless.service.NoteService;
+import com.hyhello.priceless.web.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
