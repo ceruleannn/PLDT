@@ -31,3 +31,5 @@ build/
 .vscode/
 
 /src/main/resources/token.properties
+/.mvn/**
+/.apt_generated_tests/
