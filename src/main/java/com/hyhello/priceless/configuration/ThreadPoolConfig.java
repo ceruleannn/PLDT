@@ -17,7 +17,23 @@ public class ThreadPoolConfig {
     public ThreadPoolExecutor getYouGetThreadPool() {
 
         RejectedExecutionHandler handler = (runnable, executor)->{
-            log.error("YouGetPool Executor is Full" + executor);
+            log.error("YouGetPool Executor is Full ");
+        };
+        return new ThreadPoolExecutor(
+                1,
+                1,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(20),
+                handler
+        );
+    }
+
+    @Bean("FavoritePool")
+    public ThreadPoolExecutor getFavoritePoolThreadPool() {
+
+        RejectedExecutionHandler handler = (runnable, executor)->{
+            log.error("FavoritePool Executor is Full ");
         };
 
         return new ThreadPoolExecutor(
@@ -25,7 +41,7 @@ public class ThreadPoolConfig {
                 1,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(100),
+                new LinkedBlockingQueue<Runnable>(20),
                 handler
         );
     }

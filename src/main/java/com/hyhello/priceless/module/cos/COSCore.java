@@ -19,14 +19,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Component
-public class COSUtils {
+public class COSCore {
 
     private final COSClient cosClient;
 
     private final TokenConfig tokenConfig;
 
     @Autowired
-    public COSUtils(COSClient cosClient, TokenConfig tokenConfig) {
+    public COSCore(COSClient cosClient, TokenConfig tokenConfig) {
         this.cosClient = cosClient;
         this.tokenConfig = tokenConfig;
     }
@@ -48,13 +48,12 @@ public class COSUtils {
      *     同步上传对象
      */
     public PutObjectResult uploadObject(String bucketName, File file) {
-        // 指定要上传到的存储桶
-        String bucket = bucketName + "-" + tokenConfig.getCosAppId();
         // 指定要上传到 COS 上对象键
         String key = file.getName();
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
         return cosClient.putObject(putObjectRequest);
     }
+
     
     public COSObjectInputStream downloadObject(String bucketName, String key) {
         // 方法1 获取下载输入流

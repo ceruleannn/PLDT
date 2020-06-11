@@ -18,5 +18,9 @@ public class TokenConfig {
     private String tencentSecretId;
     private String tencentSecretKey;
     private String cosAppId;
+    private String cosFavorBucketOriginalName ;
+    private String cosCDNBucketOriginalName;
+    private String cosCDNBucketExpirePrefix ;
+    private String cosCDNBucketWithExpirePrefixExpireDay;
 
 }

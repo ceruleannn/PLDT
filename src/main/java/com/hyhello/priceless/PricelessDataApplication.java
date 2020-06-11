@@ -1,7 +1,6 @@
 package com.hyhello.priceless;
 
 import com.hyhello.priceless.config.CommonConfig;
-import com.hyhello.priceless.module.youget.YouGetHandler;
 import com.hyhello.priceless.module.youget.YouGetRuntimeTask;
 import com.hyhello.priceless.module.youget.YouGetService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +28,11 @@ public class PricelessDataApplication {
         //map.values().forEach(System.out::println);
 
 
-        YouGetHandler handler = (url, file) -> {
-            System.out.println(file.getName());
-        };
-        YouGetService service = context.getBean(YouGetService.class);
-        service.offerTask("https://www.bilibili.com/video/av301", handler);
+//        YouGetHandler handler = (url, file) -> {
+//            System.out.println(file.getName());
+//        };
+//        YouGetService service = context.getBean(YouGetService.class);
+//        service.offerTask("https://www.bilibili.com/video/av301", handler);
 
 
         //log.info(MarkerFactory.getMarker("m1"), "debug marker");
