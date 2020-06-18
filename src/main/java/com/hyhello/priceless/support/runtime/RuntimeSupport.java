@@ -12,7 +12,7 @@ public class RuntimeSupport {
 
     public static List<String> exec(String command, long timeoutMills, Consumer<List<String>> c) throws IOException{
 
-        log.debug("Runtime Start , command = : " + command);
+        log.info("Runtime Start: command = " + command);
 
         Process process = Runtime.getRuntime().exec(command);
         process.getOutputStream();
@@ -27,11 +27,11 @@ public class RuntimeSupport {
         List<String> lines = new ArrayList<String>();
         String line;
         while ((line = brs.readLine()) != null) {
-            log.debug("Runtime executing: " + line);
+            log.info("Runtime executing: " + line);
             lines.add(line);
         }
 
-        log.debug("Runtime complete , command = : " + command);
+        log.info("Runtime Completed: command = " + command);
 
         if (c != null){
             c.accept(lines);

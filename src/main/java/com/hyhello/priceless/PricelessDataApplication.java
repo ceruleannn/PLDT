@@ -3,6 +3,7 @@ package com.hyhello.priceless;
 import com.hyhello.priceless.config.CommonConfig;
 import com.hyhello.priceless.module.youget.YouGetRuntimeTask;
 import com.hyhello.priceless.module.youget.YouGetService;
+import com.hyhello.priceless.web.service.FavoriteService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MarkerFactory;
 import org.springframework.boot.SpringApplication;
@@ -24,6 +25,9 @@ public class PricelessDataApplication {
     public static void main(String[] args) throws IOException {
 
         ConfigurableApplicationContext context = SpringApplication.run(PricelessDataApplication.class, args);
+        FavoriteService service = context.getBean(FavoriteService.class);
+        service.addFavorite("https://www.bilibili.com/video/av301");
+
         //Map<String, TokenConfig> map = context.getBeansOfType(TokenConfig.class);
         //map.values().forEach(System.out::println);
 

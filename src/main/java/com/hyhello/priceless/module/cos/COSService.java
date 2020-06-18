@@ -1,12 +1,15 @@
 package com.hyhello.priceless.module.cos;
 
 import com.qcloud.cos.transfer.Upload;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.util.calendar.LocalGregorianCalendar;
 
 import java.io.File;
 
 @Service
+@Slf4j
 public class COSService {
 
     private COSTransferManagerCore cosTransferManagerCore;

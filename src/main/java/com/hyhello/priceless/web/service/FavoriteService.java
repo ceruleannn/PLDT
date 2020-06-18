@@ -1,5 +1,7 @@
 package com.hyhello.priceless.web.service;
 
+import com.hyhello.priceless.config.TokenConfig;
+import com.hyhello.priceless.module.cos.COSBucketSupport;
 import com.hyhello.priceless.module.cos.COSService;
 import com.hyhello.priceless.module.youget.YouGetService;
 import com.qcloud.cos.exception.CosClientException;
@@ -22,13 +24,16 @@ public class FavoriteService {
 
     private final COSService cosService;
 
-    private final ThreadPoolExecutor executor;
+    private final ThreadPoolExecutor favoriteExecutor;
+
+    private final TokenConfig tokenConfig;
 
     @Autowired
-    public FavoriteService(YouGetService youGetService, COSService cosService, @Qualifier("FavoritePool") ThreadPoolExecutor executor) {
+    public FavoriteService(YouGetService youGetService, COSService cosService, @Qualifier("FavoritePool") ThreadPoolExecutor executor, @Qualifier("tokenConfig") TokenConfig tokenConfig) {
         this.youGetService = youGetService;
         this.cosService = cosService;
-        this.executor = executor;
+        this.favoriteExecutor = executor;
+        this.tokenConfig = tokenConfig;
     }
 
     public void addFavorite(String url){
@@ -36,38 +41,51 @@ public class FavoriteService {
         Runnable favoriteTask = () -> {
             Future<File> future = youGetService.offerTask(url);
             File file = null;
+
+            boolean ok = true;
             try {
                 try {
                     file = future.get(15, TimeUnit.MINUTES);
                 } catch (ExecutionException e) {
                     log.error("ExecutionException in addFavorite", e);
-                    return;
+                    ok = false;
                 } catch (TimeoutException e) {
                     log.error("you-task timeout", e);
-                    return;
+                    ok = false;
                 }
 
-                if (file != null){
+                UploadResult result = null;
+                if (file != null && file.exists()){
                     Upload upload = cosService.uploadFavorite(file);
                     try {
                         upload.waitForCompletion();
-                        UploadResult result = upload.waitForUploadResult();
+                        result = upload.waitForUploadResult();
                     } catch (CosClientException e) {
                         log.error("cos failed", e);
+                        ok = false;
                     }
                 }
 
+                if (ok){
+                    String region = tokenConfig.getCos().getRegion();
+                    String bucketName = COSBucketSupport.getFavorBucketName();
+                    String key = result.getKey();
+                    String downUrl = String.format("http://%s.cos.%s.myqcloud.com/%s", bucketName, region, key);
+                }
+
+
+                //TODO COS LOG
                 //TODO REMOVE LOCAL FILE
                 //TODO MAKE RECORD
+                //TODO COS CLIENT IDLE - Queue
+
             } catch (InterruptedException e) {
                 log.error("InterruptedException in addFavorite", e);
                 Thread.currentThread().interrupt();
             }
         };
 
-        executor.submit(favoriteTask);
-
-        //TODO --- INSERT DB
+        favoriteExecutor.submit(favoriteTask);
     }
 
     private void insertDB(String url, File file){

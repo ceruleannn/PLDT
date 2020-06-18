@@ -12,23 +12,23 @@ public class COSBucketSupport {
 
 
     public static String getFavorBucketName(){
-        return getAPPBucketName(BeanSupport.getTokenConfig().getCosFavorBucketOriginalName());
+        return getAPPBucketName(BeanSupport.getTokenConfig().getCos().getFavorBucketOriginalName());
     }
 
     public static String getCDNBucketName(){
-        return getAPPBucketName(BeanSupport.getTokenConfig().getCosCDNBucketOriginalName());
+        return getAPPBucketName(BeanSupport.getTokenConfig().getCos().getCDNBucketOriginalName());
     }
 
     public static String getFileKey(File file, boolean isTimeLimit){
         if (isTimeLimit){
-            String prefix = BeanSupport.getTokenConfig().getCosCDNBucketExpirePrefix();
-            return prefix + "-" + file.getName();
+            String prefix = BeanSupport.getTokenConfig().getCos().getCDNBucketExpirePrefix();
+            return prefix + "-" + file.getName().trim();
         }else {
-            return file.getName();
+            return file.getName().trim();
         }
     }
 
     private static String getAPPBucketName (String originalBucketName){
-        return originalBucketName + "-" + BeanSupport.getTokenConfig().getCosAppId();
+        return originalBucketName + "-" + BeanSupport.getTokenConfig().getCos().getAppId();
     }
 }

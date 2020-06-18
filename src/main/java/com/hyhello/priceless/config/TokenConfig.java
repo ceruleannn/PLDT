@@ -12,15 +12,21 @@ import org.springframework.context.annotation.PropertySource;
 @ConfigurationProperties(prefix="token")
 @Data
 public class TokenConfig {
+    private COS cos = new COS() ;
 
     private String datasourceUsername;
     private String datasourcePassword;
     private String tencentSecretId;
     private String tencentSecretKey;
-    private String cosAppId;
-    private String cosFavorBucketOriginalName ;
-    private String cosCDNBucketOriginalName;
-    private String cosCDNBucketExpirePrefix ;
-    private String cosCDNBucketWithExpirePrefixExpireDay;
+
+    @Data
+    public class COS{
+        private String favorBucketOriginalName ;
+        private String CDNBucketOriginalName;
+        private String CDNBucketExpirePrefix ;
+        private String CDNBucketWithExpirePrefixExpireDay;
+        private String region;
+        private String appId;
+    }
 
 }
