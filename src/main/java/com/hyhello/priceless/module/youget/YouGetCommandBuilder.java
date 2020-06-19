@@ -43,6 +43,7 @@ public class YouGetCommandBuilder {
                 builder.append("-s "); //socks
             }
             builder.append(proxyAddress);
+            builder.append(" ");
         }
         if (null != fileUrl) {
             builder.append(fileUrl);

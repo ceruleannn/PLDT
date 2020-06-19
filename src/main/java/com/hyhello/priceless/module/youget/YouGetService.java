@@ -24,7 +24,7 @@ public class YouGetService {
     public Future<File> offerTask(String resourceUrl){
 
         //TODO PROXY-HOST
-        boolean useProxy = UrlUtils.getHost(resourceUrl).equals("youtube.com");
+        boolean useProxy = UrlUtils.getHost(resourceUrl).equals("www.youtube.com");
         return this.offerTask(new YouGetRuntimeTask(resourceUrl, useProxy));
     }
 }

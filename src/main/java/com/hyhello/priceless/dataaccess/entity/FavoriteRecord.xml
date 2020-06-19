@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="com.hyhello.priceless.dataaccess.entity.FavoriteRecord">
+        <table name="tb_favorite_record" schema="hyhello" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="filename">
+                <column name="filename" length="100"/>
+            </basic>
+            <basic name="format">
+                <column name="format" length="20"/>
+            </basic>
+            <basic name="size">
+                <column name="size" precision="-1"/>
+            </basic>
+            <basic name="host">
+                <column name="host" length="100"/>
+            </basic>
+            <basic name="comment">
+                <column name="comment"/>
+            </basic>
+            <basic name="statusMsg">
+                <column name="statusMsg" length="50"/>
+            </basic>
+            <basic name="status">
+                <column name="status" precision="3"/>
+            </basic>
+            <basic name="upTime">
+                <column name="upTime" precision="-1"/>
+            </basic>
+            <basic name="downTime">
+                <column name="downTime" precision="-1"/>
+            </basic>
+            <basic name="baseUrl">
+                <column name="baseUrl" length="500"/>
+            </basic>
+            <basic name="bucket">
+                <column name="bucket" length="50"/>
+            </basic>
+            <basic name="cloudUrl">
+                <column name="cloudUrl" length="500"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

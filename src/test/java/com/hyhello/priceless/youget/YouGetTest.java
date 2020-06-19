@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  *
  */
 public class YouGetTest {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         Consumer<List<String>> callback2 = list -> {
 

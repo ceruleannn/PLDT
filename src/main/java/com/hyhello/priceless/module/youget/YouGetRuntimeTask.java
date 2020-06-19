@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -41,32 +40,59 @@ public class YouGetRuntimeTask extends AbstractRuntimeTask implements Callable<F
         return 0;
     }
 
-
     @Override
     public File call() throws Exception {
         List<String> lines = RuntimeSupport.exec(this);
 
-        String fileName = null;
+        List<String> fileNames = new ArrayList<>();
         String title = null;
-        for (String line : lines) {
-            if (line.startsWith("title")) {
-                title = line.substring(7).trim();
-            }
+        if (lines != null){
+            for (String line : lines) {
+                if (line.startsWith("title")) {
+                    title = line.substring(7).trim();
+                }
 
-            if (line.startsWith("Downloading ") && fileName == null) {
-                int index = line.indexOf("...");
-                fileName = line.substring(12, index);
+                if (line.startsWith("Downloading ")) {
+                    int index = line.indexOf("...");
+                    fileNames.add(line.substring(12, index));
+                }
+
+                //srt in youtube
+                if (line.startsWith("Saving ")) {
+                    int index = line.indexOf("...");
+                    fileNames.add(line.substring(7, index));
+                }
             }
         }
 
-        String path = BeanSupport.getCommonConfig().getYougetTempDir()  + fileName;
-        File file = new File(path);
-        if (file.exists() && !StringUtils.isEmpty(fileName)){
-            return file;
+
+        File refile = null;
+        if (fileNames.size() > 0){
+            for (int index=0; index<fileNames.size(); index++) {
+                String fileName = fileNames.get(index);
+                String path = BeanSupport.getCommonConfig().getYougetTempDir()  + fileName;
+                File file = new File(path);
+
+                //无法用title比对: title = Me at the zoo ; Saving Me at the zoo.en.srt
+                if (index == 0){
+                    if (file.exists() && !StringUtils.isEmpty(fileName)){
+                        refile = file;
+                    }else {
+                        log.warn("YouGetTask failed: " + url);
+                        return null;
+                    }
+                }else {
+                    if (file.exists()){
+                        log.info("delete you-get irrelevant file: " + file.getName());
+                        file.delete();
+                    }
+                }
+            }
         }else {
             log.warn("YouGetTask failed: " + url);
-            return null;
         }
+
+        return refile;
     }
 }
 
