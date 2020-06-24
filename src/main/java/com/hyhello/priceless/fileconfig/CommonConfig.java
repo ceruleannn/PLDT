@@ -1,4 +1,4 @@
-package com.hyhello.priceless.config;
+package com.hyhello.priceless.fileconfig;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

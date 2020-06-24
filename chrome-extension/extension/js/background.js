@@ -13,7 +13,8 @@
 
 //install
 //homepage = function () {return chrome.runtime.getManifest().homepage_url};
-var homepage = "http://www.baidu.com";
+
+var homepage = "http://www.hyhello.com";
 var tab = {"open": function (url) {chrome.tabs.create({"url": url, "active": true})}};
 chrome.runtime.setUninstallURL(homepage + "?v=1"+ "&type=uninstall", function () {});
 chrome.runtime.onInstalled.addListener(function (e) {
@@ -26,19 +27,26 @@ chrome.runtime.onInstalled.addListener(function (e) {
 
 
 var logMap = new Map();
+var test_mode = false;
 var log_close = false;
 var cors_open = false;
 var notification_close = false;
 var push_close = true;
-
 var whiteArray = [];
+
+
+function getConnHost(){
+	var remotehost = "http://www.hyhello.com";
+	var remoteAddr = "http://49.232.170.71";
+	var localhost =  "http://127.0.0.1"
+	return test_mode ? localhost : remotehost;
+}
 
 
 var postLog = function (param) {
     $.ajax({
         type: "POST",
-        url: "http://49.232.170.71/accessLog",
-        //url: "http://127.0.0.1/accessLog",
+        url: getConnHost() + "/accessLog",
         data: {url:param.url, title:param.title},
         dataType: "json",
         success: function(data){
@@ -51,10 +59,26 @@ var postLog = function (param) {
     });
 };
 
+var postFavorite = function(url) {
+	$.ajax({
+        type: "PUT",
+        url: getConnHost() + "/favorite",
+        data: {url:url},
+        dataType: "json",
+        success: function(data){
+            console.log(data);
+        },
+        error: function (error) {
+            console.log(error);
+            notifyMsg("收藏传输失败!  (⇀‸↼‶) \n"  + param.url);
+        }
+    });
+}
+
 var getLogWhiteList = function(){
 	$.ajax({
         type: "GET",
-        url: "http://49.232.170.71/accessLog/whiteList",
+        url: getConnHost() + "/accessLog/whiteList",
         dataType: "json",
         success: function(data){
             console.log(data);
@@ -67,6 +91,38 @@ var getLogWhiteList = function(){
     });
 	
 };
+
+
+var favoriteFilter = {}
+var getFavoriteFilter = function(){
+	return $.ajax({
+		type: "GET",
+		url: getConnHost() + "/favorite/filter",
+		dataType: "json",
+		success: function(data){
+			console.log(data);
+			favoriteFilter = data.list.map(function(e){
+				return e.chromePattern;
+			});
+		},
+		error: function (error) {
+			console.log(error);
+			notifyMsg("获取收藏过滤失败! (⇀‸↼‶) \n");
+		}
+	})
+};
+
+
+var createContextMenu = function(){
+	getFavoriteFilter().then(function(res) {
+        chrome.contextMenus.create({
+			"title": "收藏...",
+			"contexts":["page"],
+			"onclick":favorContextListener,
+			"documentUrlPatterns" : favoriteFilter
+		});    
+    })
+}
 
 var notifyMsg = function (msg) {
 	if (notification_close){
@@ -115,16 +171,25 @@ var filterInWhite = function(url, title){
 };
 
 $(function(){
-	notifyMsg("hyhello start successfully");
+	init();
+});
+
+function init(){
+	notifyMsg("hyhello start successfully in " + getConnHost());
 	getLogWhiteList();
+	createContextMenu();
 
     logSwitch(false);
     addBookmarkListener();
+}
 
-});
+function favorContextListener(info,tab) {
+
+	console.log(info);
+	postFavorite(info.pageUrl)
+}
 
 function tabsUpdateListener(id,info,tab) {
-
 	if (info.status === "loading"){	
 		logMap.set(id,tab.url);
 	}
@@ -137,7 +202,6 @@ function tabsUpdateListener(id,info,tab) {
             logMap.delete(id);
         }
 	}
-
 }
 
 function tabsRemoveListener(id, info) {
@@ -163,6 +227,10 @@ function notificationSwitch(notification_close0) {
 }
 function pushSwitch(push_close0) {
 	push_close = push_close0;
+}
+function TestModeSwitch(test_mode0) {
+	test_mode = test_mode0;
+	init();
 }
 
 function addBookmarkListener() {

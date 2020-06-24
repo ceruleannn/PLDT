@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        version="2.0">
+
+    <entity class="com.hyhello.priceless.dataaccess.entity.FavoriteFilter">
+        <table name="tb_favorite_filter" schema="hyhello" catalog=""/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="11"/>
+            </id>
+            <basic name="type">
+                <column name="type" precision="11"/>
+            </basic>
+            <basic name="host">
+                <column name="host" length="50"/>
+            </basic>
+            <basic name="regular">
+                <column name="regular" length="100"/>
+            </basic>
+            <basic name="chromePattern">
+                <column name="chromePattern"/>
+            </basic>
+            <basic name="useProxy">
+                <column name="useProxy" precision="3"/>
+            </basic>
+            <basic name="remark">
+                <column name="remark"/>
+            </basic>
+            <basic name="status">
+                <column name="status" precision="1"/>
+            </basic>
+            <basic name="createTime">
+                <column name="createTime" precision="-1"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

@@ -1,6 +1,6 @@
 package com.hyhello.priceless.configuration;
 
-import com.hyhello.priceless.config.TokenConfig;
+import com.hyhello.priceless.fileconfig.TokenConfig;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;

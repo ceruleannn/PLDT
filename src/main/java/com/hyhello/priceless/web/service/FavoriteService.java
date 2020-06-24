@@ -1,6 +1,6 @@
 package com.hyhello.priceless.web.service;
 
-import com.hyhello.priceless.config.TokenConfig;
+import com.hyhello.priceless.fileconfig.TokenConfig;
 import com.hyhello.priceless.dataaccess.entity.FavoriteRecord;
 import com.hyhello.priceless.dataaccess.repository.FavoriteRecordRepository;
 import com.hyhello.priceless.module.cos.COSBucketSupport;
@@ -61,6 +61,7 @@ public class FavoriteService {
                     log.error("you-task timeout", e);
                 }
 
+                //cosService Object Oriented
                 UploadResult result = null;
                 if (file != null && file.exists()){
                     Upload upload = cosService.uploadFavorite(file);
@@ -79,7 +80,7 @@ public class FavoriteService {
                     file.delete();
                 }
 
-                //TODO SELECT QUALITY
+                //TODO SELECT QUALITY, PLUGIN, DISTINCT
                 //TODO COS LOG ?? - EVENT_DISPATCHER
                 //TODO COS CLIENT IDLE ?? - Queue
                 // WEBSOCKET KEEP COMMUNICATE

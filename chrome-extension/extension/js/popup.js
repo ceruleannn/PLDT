@@ -6,6 +6,7 @@ $(function () {
         $("#cors_open").attr("checked",window.cors_open);
         $("#notification_close").attr("checked",window.notification_close);
         $("#push_close").attr("checked",window.push_close);
+		$("#test_mode").attr("checked",window.test_mode);
 
         $("#log_close").change(function() {
             window.logSwitch($("#log_close").is(":checked"));
@@ -19,5 +20,9 @@ $(function () {
         $("#push_close").change(function() {
             window.pushSwitch($("#push_close").is(":checked"));
         });
+		$("#test_mode").change(function() {
+            window.TestModeSwitch($("#test_mode").is(":checked"));
+        });
+
     });
 });
