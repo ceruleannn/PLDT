@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -54,13 +53,13 @@ public class YouGetRuntimeTask extends AbstractRuntimeTask implements Callable<F
 
                 if (line.startsWith("Downloading ")) {
                     int index = line.indexOf("...");
-                    fileNames.add(line.substring(12, index));
+                    fileNames.add(line.substring(12, index).trim());
                 }
 
                 //srt in youtube
                 if (line.startsWith("Saving ")) {
                     int index = line.indexOf("...");
-                    fileNames.add(line.substring(7, index));
+                    fileNames.add(line.substring(7, index).trim());
                 }
             }
         }

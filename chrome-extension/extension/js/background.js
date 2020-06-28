@@ -70,7 +70,7 @@ var postFavorite = function(url) {
         },
         error: function (error) {
             console.log(error);
-            notifyMsg("收藏传输失败!  (⇀‸↼‶) \n"  + param.url);
+            notifyMsg("收藏传输失败!  (⇀‸↼‶) \n"  + url);
         }
     });
 }

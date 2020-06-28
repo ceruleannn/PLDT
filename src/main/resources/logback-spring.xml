@@ -22,10 +22,10 @@
         </encoder>
     </appender>
 
-    <!--
+
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/data1/fastim-log/route/%d{yyyy-MM-dd}.log
+            <fileNamePattern>/data/log/priceless/%d{yyyy-MM-dd}.log
             </fileNamePattern>
             <maxHistory>12</maxHistory>
         </rollingPolicy>
@@ -34,10 +34,11 @@
             </pattern>
         </encoder>
     </appender>
-    -->
+
 
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="MY" />
+        <appender-ref ref="FILE" />
     </root>
 </configuration>
