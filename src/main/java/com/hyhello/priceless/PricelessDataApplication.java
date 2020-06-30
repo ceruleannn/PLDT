@@ -23,8 +23,8 @@ public class PricelessDataApplication {
 
         ConfigurableApplicationContext context = SpringApplication.run(PricelessDataApplication.class, args);
         FavoriteService service = context.getBean(FavoriteService.class);
- //       service.addFavorite("https://www.bilibili.com/video/av3056");
- //       service.addFavorite("https://www.bilibili.com/video/av3057");
+       //service.addFavorite("https://www.youtube.com/watch?v=2eYsztRFjjs");
+       //service.addFavorite("https://www.bilibili.com/video/BV1qK4y1t7uK/?spm_id_from=333.788.videocard.7");
         //Map<String, TokenConfig> map = context.getBeansOfType(TokenConfig.class);
         //map.values().forEach(System.out::println);
 

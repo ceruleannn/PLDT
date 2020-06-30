@@ -24,11 +24,15 @@ public class YouGetRuntimeTask extends AbstractRuntimeTask implements Callable<F
 
     private boolean useProxy;
 
+    private YouGetQualityInfo qualityInfo;
+
     @Override
     public String getCommand() {
         return YouGetCommandBuilder
                 .newBuilder()
                 .setRootPath(BeanSupport.getCommonConfig().getYougetTempDir())
+                .setItag(qualityInfo.itag)
+                .setFormat(qualityInfo.format)
                 .useProxy(useProxy)
                 .setFileUrl(url)
                 .build();
