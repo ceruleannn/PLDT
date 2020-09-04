@@ -63,7 +63,6 @@ public class YouGetCommandBuilder {
             builder.append("--format=").append(format).append(" ");
         }
 
-
         if (null != rootPath) {
             builder.append("-o ").append(rootPath).append(" ");
         }   

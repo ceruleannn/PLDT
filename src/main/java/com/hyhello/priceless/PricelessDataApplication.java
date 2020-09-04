@@ -1,6 +1,7 @@
 package com.hyhello.priceless;
 
 import com.hyhello.priceless.fileconfig.CommonConfig;
+import com.hyhello.priceless.web.service.BilibiliFavoriteListService;
 import com.hyhello.priceless.web.service.FavoriteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -25,6 +26,10 @@ public class PricelessDataApplication {
         FavoriteService service = context.getBean(FavoriteService.class);
        //service.addFavorite("https://www.youtube.com/watch?v=2eYsztRFjjs");
        //service.addFavorite("https://www.bilibili.com/video/BV1qK4y1t7uK/?spm_id_from=333.788.videocard.7");
+       //service.addFavorite("https://www.bilibili.com/video/av88329107/");
+
+        BilibiliFavoriteListService bilibiliFavoriteListService = context.getBean(BilibiliFavoriteListService.class);
+        bilibiliFavoriteListService.execute(0);
         //Map<String, TokenConfig> map = context.getBeansOfType(TokenConfig.class);
         //map.values().forEach(System.out::println);
 

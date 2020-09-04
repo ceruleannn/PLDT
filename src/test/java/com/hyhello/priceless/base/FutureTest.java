@@ -13,12 +13,16 @@ public class FutureTest {
 
          CompletableFuture.supplyAsync(() -> {
             try {
-                Thread.currentThread().sleep(3000);
+                Thread.sleep(3000);
+                System.out.println("12");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             return  "";
         }).thenApplyAsync(s-> {return 1;})
-                 .thenApplyAsync(a-> a+1);
+            .thenApplyAsync(a-> {
+                     System.out.println(a+1);
+                     return a + 1;
+           });
     }
 }

@@ -16,7 +16,6 @@ public class JsonUtils {
     public static <T> T toJsonObj(String json, Class<T> clazz) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, clazz);
-
     }
 
     public static <T> List<T> toJsonList(String json, Class<T> clazz) throws IOException {

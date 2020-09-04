@@ -25,7 +25,7 @@
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/data/log/priceless/%d{yyyy-MM-dd}.log
+            <fileNamePattern>/data1/log/priceless/%d{yyyy-MM-dd}.log
             </fileNamePattern>
             <maxHistory>12</maxHistory>
         </rollingPolicy>

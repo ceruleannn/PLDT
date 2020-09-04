@@ -81,6 +81,11 @@ public class YouGetInfoTask extends AbstractRuntimeTask implements Callable<YouG
 class YouGetQualityInfo {
     Integer itag;
     String format;
+
+    public static void main(String[] args) {
+        String s = "    # download-with: \u001B[4myou-get --itag=160 [URL]\u001B[0m\n".replaceAll("\u001B\\[[;\\d]*m", "");
+        System.out.println(s);
+    }
 }
 
 

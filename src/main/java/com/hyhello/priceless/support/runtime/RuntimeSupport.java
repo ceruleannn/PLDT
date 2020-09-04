@@ -26,6 +26,7 @@ public class RuntimeSupport {
         List<String> lines = new ArrayList<String>();
         String line;
         while ((line = brs.readLine()) != null) {
+            line = line.replaceAll("\u001B\\[[;\\d]*m", "");
             log.info("Runtime: " + line);
             lines.add(line);
         }

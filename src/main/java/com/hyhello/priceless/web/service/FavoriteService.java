@@ -64,6 +64,7 @@ public class FavoriteService {
                 //cosService Object Oriented
                 UploadResult result = null;
                 if (file != null && file.exists()){
+                    log.info("upload cos start: " + url);
                     Upload upload = cosService.uploadFavorite(file);
                     try {
                         upload.waitForCompletion(); //阻塞
