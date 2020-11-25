@@ -24,7 +24,7 @@ public class BilibiliFavoriteListService {
     private static final String CRAWL_URL = "https://api.bilibili.com/x/v1/medialist/resource/list?type=3&biz_id=%s&offset_index=%d&offset=%d&from=web&first_page=false&ps=20";
     private static final String DOWN_URL_PREFIX = "https://www.bilibili.com/video/";
 
-    public void execute(int biz_id) throws IOException {
+    public void execute(int biz_id, List<String> target, String localPath, String comment) throws IOException {
         List<String> bv_ids = new ArrayList<>();
 
         RestTemplate restTemplate = new RestTemplate();
@@ -52,8 +52,7 @@ public class BilibiliFavoriteListService {
 
         log.info("bilibili list size = " + bv_ids.size());
         for (String bv_id : bv_ids) {
-            favoriteService.addFavorite(DOWN_URL_PREFIX + bv_id);
+            favoriteService.addFavorite(DOWN_URL_PREFIX + bv_id, target, localPath, comment);
         }
     }
-
 }

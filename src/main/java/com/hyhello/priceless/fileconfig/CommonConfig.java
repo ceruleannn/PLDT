@@ -17,5 +17,7 @@ public class CommonConfig {
     private String yougetProxyType;
     private String yougetProxyAddress;
     private String yougetTempDir;
+    private String globalSocksProxyHost;
+    private String globalSocksProxyPort;
 
 }

@@ -13,6 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 @Data
 public class TokenConfig {
     private COS cos = new COS() ;
+    private googleAuth2 googleAuth2 = new googleAuth2();
 
     private String datasourceUsername;
     private String datasourcePassword;
@@ -29,4 +30,10 @@ public class TokenConfig {
         private String appId;
     }
 
+    @Data
+    public class googleAuth2{
+        private String refreshToken ;
+        private String clientSecret;
+        private String API_KEY;
+    }
 }

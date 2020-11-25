@@ -1,11 +1,13 @@
 package com.hyhello.priceless.web.service;
 
+import com.google.common.collect.Lists;
 import com.hyhello.priceless.fileconfig.TokenConfig;
 import com.hyhello.priceless.dataaccess.entity.FavoriteRecord;
 import com.hyhello.priceless.dataaccess.repository.FavoriteRecordRepository;
 import com.hyhello.priceless.module.cos.COSBucketSupport;
 import com.hyhello.priceless.module.cos.COSService;
 import com.hyhello.priceless.module.youget.YouGetService;
+import com.hyhello.priceless.support.BeanSupport;
 import com.hyhello.priceless.utils.ByteUtils;
 import com.hyhello.priceless.utils.UrlUtils;
 import com.qcloud.cos.exception.CosClientException;
@@ -16,10 +18,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.*;
 
 @Service
@@ -45,40 +49,49 @@ public class FavoriteService {
         this.favoriteRecordRepository = favoriteRecordRepository;
     }
 
-    public void addFavorite(String url){
+    public void addFavorite(String url, List<String> target){
+        addFavorite(url, target, BeanSupport.getCommonConfig().getYougetTempDir(), "");
+    }
+
+    public void addFavorite(String url, List<String> target, String localPath, String comment ){
+
+        if (ObjectUtils.isEmpty(target)){
+            log.warn("no target specify while add favorite");
+            target = Lists.newArrayList("local");
+        }
+
+        final List<String> t = target;
 
         Runnable favoriteTask = () -> {
-            Future<File> future = youGetService.offerTask(url);
+            Future<File> future = youGetService.doTask(url, localPath);
             File file = null;
 
-            boolean ok = false;
             try {
-                try {
+                if (future != null){
                     file = future.get(15, TimeUnit.MINUTES);
-                } catch (ExecutionException e) {
-                    log.error("ExecutionException in addFavorite", e);
-                } catch (TimeoutException e) {
-                    log.error("you-task timeout", e);
                 }
 
-                //cosService Object Oriented
                 UploadResult result = null;
                 if (file != null && file.exists()){
-                    log.info("upload cos start: " + url);
-                    Upload upload = cosService.uploadFavorite(file);
-                    try {
-                        upload.waitForCompletion(); //阻塞
-                        result = upload.waitForUploadResult();
-                        ok = true;
-                    } catch (CosClientException e) {
-                        log.error("cos failed", e);
-                    }
-                }
+                    if (t.contains("cos")){
+                        //cosService Object Oriented
+                        log.info("upload cos start: " + url);
+                        Upload upload = cosService.uploadFavorite(file);
+                        try {
+                            upload.waitForCompletion(); //阻塞
+                            result = upload.waitForUploadResult();
+                            log.info("upload cos complete: " + url);
 
-                if (ok){
-                    log.info("upload cos complete: " + url);
-                    insertDB(url, file, result);
-                    file.delete();
+                        } catch (CosClientException e) {
+                            log.error("upload cos failed", e);
+                        }
+                    }
+
+                    insertDB(url, file, result, comment);
+                    if (!t.contains("local")){
+                        String ok = file.delete() ? "成功" : "失败";
+                        log.info("删除本地文件" + file.getName() + ":" + ok);
+                    }
                 }
 
                 //TODO SELECT QUALITY, PLUGIN, DISTINCT
@@ -97,26 +110,28 @@ public class FavoriteService {
         favoriteExecutor.submit(favoriteTask);
     }
 
-    private void insertDB(String url, File file, UploadResult result){
-        String region = tokenConfig.getCos().getRegion();
-        String bucketName = COSBucketSupport.getFavorBucketName();
-        String key = result.getKey();
-        String downUrl = String.format("http://%s.cos.%s.myqcloud.com/%s", bucketName, region, key);
+    private void insertDB(String url, File file, UploadResult result, String comment){
 
         FavoriteRecord favoriteRecord = new FavoriteRecord();
-        favoriteRecord.setBucket(bucketName);
+        if (result != null){
+            String region = tokenConfig.getCos().getRegion();
+            String bucketName = COSBucketSupport.getFavorBucketName();
+            String key = result.getKey();
+            String downUrl = String.format("http://%s.cos.%s.myqcloud.com/%s", bucketName, region, key);
+            favoriteRecord.setBucket(bucketName);
+            favoriteRecord.setCloudUrl(downUrl);
+            favoriteRecord.setStatusMsg("已上传");
+        }
         String fileName = file.getName();
         favoriteRecord.setFilename(FilenameUtils.getBaseName(fileName));
         favoriteRecord.setFormat(FilenameUtils.getExtension(fileName));
         favoriteRecord.setSize(ByteUtils.toMB(file.length()));
         favoriteRecord.setHost(UrlUtils.getHost(url));
         favoriteRecord.setBaseUrl(url);
-        favoriteRecord.setCloudUrl(downUrl);
-        favoriteRecord.setComment("");
+        favoriteRecord.setComment(comment);
         favoriteRecord.setUpTime(Timestamp.valueOf(LocalDateTime.now()));
         favoriteRecord.setDownTime(Timestamp.valueOf(LocalDateTime.now()));
         favoriteRecord.setStatus((byte) 0);
-        favoriteRecord.setStatusMsg("已上传");
         favoriteRecordRepository.save(favoriteRecord);
     }
 }

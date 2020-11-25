@@ -1,5 +1,6 @@
 package com.hyhello.priceless.web.controller;
 
+import com.google.common.collect.Lists;
 import com.hyhello.priceless.dto.resp.Response;
 import com.hyhello.priceless.web.service.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class FavoriteController {
     @PutMapping
     @ResponseBody
     public Response addFavorite(String url) throws IOException {
-        favoriteService.addFavorite(url);
+        favoriteService.addFavorite(url, Lists.newArrayList("local"));
         return new Response("");
     }
 }

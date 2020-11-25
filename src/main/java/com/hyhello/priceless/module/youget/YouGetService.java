@@ -30,7 +30,7 @@ public class YouGetService {
        return threadPool.submit(task);
     }
 
-    public Future<File> offerTask(String resourceUrl) {
+    public Future<File> doTask(String resourceUrl, String localPath) {
 
         //TODO CACHE?
         Map<String, FavoriteFilter> map = favoriteFilterRepository.findAll().stream().collect(Collectors.toMap(FavoriteFilter::getHost, Function.identity()));
@@ -44,6 +44,10 @@ public class YouGetService {
         YouGetQualityInfo info = null;
         try {
             info = this.offerTask(new YouGetInfoTask(resourceUrl, useProxy)).get();
+            if (info == null){
+                log.warn("fail getting YouGetQualityInfo:" + resourceUrl);
+                return null;
+            }
         } catch (InterruptedException e) {
             log.warn("InterruptedException in addFavorite", e);
             Thread.currentThread().interrupt();
@@ -51,6 +55,6 @@ public class YouGetService {
             log.warn("ExecutionException in addFavorite", e);
         }
 
-        return this.offerTask(new YouGetRuntimeTask(resourceUrl, useProxy, info));
+        return this.offerTask(new YouGetRuntimeTask(resourceUrl,localPath, useProxy, info));
     }
 }

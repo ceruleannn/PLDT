@@ -24,7 +24,7 @@ public class ThreadPoolConfig {
                 1,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(200),
+                new LinkedBlockingQueue<Runnable>(500),
                 handler
         );
     }
@@ -41,7 +41,7 @@ public class ThreadPoolConfig {
                 1,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(200),
+                new LinkedBlockingQueue<Runnable>(500),
                 handler
         );
     }

@@ -33,3 +33,4 @@ build/
 /src/main/resources/token.properties
 /.mvn/**
 /.apt_generated_tests/
+/src/main/resources/client_secret.json

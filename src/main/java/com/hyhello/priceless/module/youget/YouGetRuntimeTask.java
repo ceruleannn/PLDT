@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -22,6 +23,8 @@ public class YouGetRuntimeTask extends AbstractRuntimeTask implements Callable<F
     @NonNull
     private String url;
 
+    private String localPath;
+
     private boolean useProxy;
 
     private YouGetQualityInfo qualityInfo;
@@ -30,7 +33,7 @@ public class YouGetRuntimeTask extends AbstractRuntimeTask implements Callable<F
     public String getCommand() {
         return YouGetCommandBuilder
                 .newBuilder()
-                .setRootPath(BeanSupport.getCommonConfig().getYougetTempDir())
+                .setRootPath(StringUtils.hasLength(localPath) ? localPath : BeanSupport.getCommonConfig().getYougetTempDir())
                 .setItag(qualityInfo.itag)
                 .setFormat(qualityInfo.format)
                 .useProxy(useProxy)
@@ -68,17 +71,19 @@ public class YouGetRuntimeTask extends AbstractRuntimeTask implements Callable<F
             }
         }
 
+        if (!localPath.endsWith("/")){
+            localPath = localPath + "/";
+        }
 
         File refile = null;
         if (fileNames.size() > 0){
             for (int index=0; index<fileNames.size(); index++) {
                 String fileName = fileNames.get(index);
-                String path = BeanSupport.getCommonConfig().getYougetTempDir()  + fileName;
-                File file = new File(path);
+                File file = new File(localPath + fileName);
 
                 //无法用title比对: title = Me at the zoo ; Saving Me at the zoo.en.srt
                 if (index == 0){
-                    if (file.exists() && !StringUtils.isEmpty(fileName)){
+                    if (file.exists() && !ObjectUtils.isEmpty(fileName)){
                         refile = file;
                     }else {
                         log.warn("YouGetTask failed: " + url);
