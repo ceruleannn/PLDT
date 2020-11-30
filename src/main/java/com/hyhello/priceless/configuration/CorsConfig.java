@@ -11,9 +11,17 @@ public class CorsConfig {
     private CorsConfiguration buildConfig() {
 
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*"); // 1允许任何域名使用
+        /**
+         *  When allowCredentials is true, allowedOrigins cannot contain
+         *  the special value "*"since that cannot be set on the
+         *  "Access-Control-Allow-Origin" response header.
+         *  To allow credentials to a set of origins,
+         *  list them explicitly or consider using "allowedOriginPatterns" instead.
+         */
+        //corsConfiguration.addAllowedOrigin("*"); // 1允许任何域名使用
         corsConfiguration.addAllowedHeader("*"); // 2允许任何头
         corsConfiguration.addAllowedMethod("*"); // 3允许任何方法（post、get等）
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.setAllowCredentials(true);
         return corsConfiguration;
     }

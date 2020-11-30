@@ -7,6 +7,7 @@ $(function () {
         $("#notification_close").attr("checked",window.notification_close);
         $("#push_close").attr("checked",window.push_close);
 		$("#test_mode").attr("checked",window.test_mode);
+        $("#location").val(window.window.localStorage.getItem("location"));
 
         $("#log_close").change(function() {
             window.logSwitch($("#log_close").is(":checked"));
@@ -22,6 +23,11 @@ $(function () {
         });
 		$("#test_mode").change(function() {
             window.TestModeSwitch($("#test_mode").is(":checked"));
+        });
+        $("#location").blur(function() {
+           var location = $("#location").val();
+           window.window.localStorage.setItem("location", location);
+           window.refreshLocation();
         });
 
     });

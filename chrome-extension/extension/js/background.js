@@ -33,7 +33,7 @@ var cors_open = false;
 var notification_close = false;
 var push_close = true;
 var whiteArray = [];
-
+var locationValue = window.localStorage.getItem("location");
 
 function getConnHost(){
 	var remotehost = "http://www.hyhello.com";
@@ -47,7 +47,7 @@ var postLog = function (param) {
     $.ajax({
         type: "POST",
         url: getConnHost() + "/accessLog",
-        data: {url:param.url, title:param.title},
+        data: {url:param.url, title:param.title, location:locationValue},
         dataType: "json",
         success: function(data){
             console.log(data);
@@ -175,7 +175,7 @@ $(function(){
 });
 
 function init(){
-	notifyMsg("hyhello start successfully in " + getConnHost());
+	notifyMsg("hyhello start successfully in " + getConnHost() + ", cur location:" + locationValue);
 	getLogWhiteList();
 	createContextMenu();
 
@@ -231,6 +231,12 @@ function pushSwitch(push_close0) {
 function TestModeSwitch(test_mode0) {
 	test_mode = test_mode0;
 	init();
+}
+
+function refreshLocation(){
+    var locationUpdate =  window.localStorage.getItem("location");
+    locationValue = locationUpdate;
+    notifyMsg("location update:" + locationUpdate);
 }
 
 function addBookmarkListener() {
