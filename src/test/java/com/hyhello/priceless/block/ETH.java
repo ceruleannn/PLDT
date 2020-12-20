@@ -1,6 +1,9 @@
 package com.hyhello.priceless.block;
 
 import okhttp3.RequestBody;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.NewAccountIdentifier;
@@ -9,7 +12,9 @@ import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.*;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 
 import java.io.IOException;
@@ -24,21 +29,37 @@ public class ETH {
 
     private static Web3j web3j;
     private static Admin admin;
-    public static String RPC_URL = "http://127.0.0.1:3334";
+    public static String RPC_URL = "http://127.0.0.1:8545";
 
     public static String fromAddress = "0xd4278788d4f730ce42a0448c7d7a50b5ca9b17bd";
     public static String password= "";
     private static String toAddress = "0x05f50cd5a97d9b3fec35df3d0c6c8234e6793bdf";
     private static BigDecimal defaultGasPrice = BigDecimal.valueOf(5);
 
-    public static void main(String[] args) {
-        web3j = Web3j.build(new HttpService(RPC_URL));
-        admin = Admin.build(new HttpService(RPC_URL));
+    public static void main(String[] args) throws Exception {
+        //web3j = Web3j.build(new HttpService(RPC_URL));
+        //admin = Admin.build(new HttpService(RPC_URL));
+
+        web3j = Web3j.build(new HttpService("https://mainnet.infura.io/v3/1f0898be26f54849b38479f6c9ce76ff"));
+        admin = Admin.build(new HttpService("https://mainnet.infura.io/v3/1f0898be26f54849b38479f6c9ce76ff"));
+
 
         //getBalance(fromAddress);
         //getTransactionNonce(fromAddress);
-        sendTransaction();
+        //sendTransaction();
 
+        tran();
+    }
+
+    public static  void tran() throws Exception {
+        Credentials credentials = WalletUtils.loadCredentials("", "C:\\Users\\wangshu\\Desktop\\UTC--2020-12-18T07-04-48.445177000Z--d4278788d4f730ce42a0448c7d7a50b5ca9b17bd");
+        TransactionReceipt transactionReceipt = Transfer.sendFunds(
+                web3j, credentials, "0x88078d0F3A25bcBA6757d6045E43F1A64fD2783a",
+                BigDecimal.valueOf(0.03), Convert.Unit.ETHER)
+                .send();
+
+        BigInteger bigInteger = transactionReceipt.getGasUsed();
+        System.out.println(bigInteger.intValue());
     }
 
     /**

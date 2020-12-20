@@ -8,6 +8,7 @@ import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.protocol.ipc.WindowsIpcService;
 import org.web3j.utils.Convert;
 
 import java.io.IOException;
@@ -26,12 +27,14 @@ public class ETHAccount {
 
 
     public static void main(String[] args) throws IOException {
-        admin = Admin.build(new HttpService(ETH.RPC_URL));
+        admin = Admin.build(new HttpService("https://mainnet.infura.io/v3/1f0898be26f54849b38479f6c9ce76ff"));
+        //admin = Admin.build(new HttpService(ETH.RPC_URL));
+
         //createNewAccount();
         //getAccountList();
         //unlockAccount();
 
-        System.out.println(getEthBanlance(admin, "0xd4278788d4f730ce42a0448c7d7a50b5ca9b17bd"));
+        System.out.println(getEthBanlance(admin, "0x88078d0F3A25bcBA6757d6045E43F1A64fD2783a"));
 //		admin.personalSendTransaction(); 该方法与web3j.sendTransaction相同 不在此写例子。
     }
 
