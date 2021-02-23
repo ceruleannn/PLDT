@@ -22,9 +22,9 @@ public class DouYin {
     public static void main(String[] args) throws IOException, InterruptedException {
         //importFiddlerRawRequest();
         //httpGet();
+
         crawlFavorite();
-        //File file = new File("C:\\Users\\Administrator\\Desktop\\dyff\\173_.json");
-        //System.out.println(file.length());
+
     }
 
     public static String httpGet() throws IOException {
@@ -97,14 +97,18 @@ public class DouYin {
             for (JsonNode ele : aweme_list) {
                 elecount++ ;
                 String aweme_id = ele.get("aweme_id").asText();
-                File store = new File("C:\\Users\\Administrator\\Desktop\\dyff\\" + aweme_id + ".mp4");
+                File store = new File("C:\\Users\\Administrator\\Desktop\\dyff", aweme_id + ".mp4");
                 if (store.exists()){
                     continue;
                 }
 
                 for (JsonNode urlnode : ele.get("video").get("download_addr").get("url_list")) {
                     String url = urlnode.asText();
-                    FileUtils.copyURLToFile(new URL(url), store, 3000, 10000);
+
+
+                    //FileUtils.copyURLToFile(new URL(url), store, 3000, 10000);
+                    DownloadUtil.get().downloadSync(url, "C:\\Users\\Administrator\\Desktop\\dyff", aweme_id + ".mp4", null );
+
                     System.out.println(url);
                     System.out.println(store.length());
                     if (store.length() > 3000){
